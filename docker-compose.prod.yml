@@ -1,0 +1,26 @@
+# EcoSort - production-ish override.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build
+#
+# The frontend becomes a static nginx bundle on ${FRONTEND_PROD_PORT:-8080}, which also
+# proxies /api and /models to the backend - so there is a single origin and no CORS.
+#
+# Requires Docker Compose >= 2.24 for the !reset / !override merge tags.
+
+services:
+  backend:
+    image: ecosort-backend:prod
+    environment:
+      NODE_ENV: production
+
+  frontend:
+    build:
+      target: prod
+    image: ecosort-frontend:prod
+    # !override replaces the dev port mapping instead of appending to it.
+    ports: !override
+      - "${FRONTEND_PROD_PORT:-8080}:80"
+    environment:
+      NODE_ENV: production
+    # The bundle is baked into the image; the dev bind mounts must not leak into prod.
+    volumes: !reset []

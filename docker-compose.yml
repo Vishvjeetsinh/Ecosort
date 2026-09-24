@@ -1,0 +1,90 @@
+# EcoSort - local development stack.
+#
+#   docker compose up --build
+#
+# Frontend: http://localhost:5173   Backend API: http://localhost:4000/api/health
+#
+# No `version:` key - it is obsolete in Compose v2 and emits a warning.
+name: ecosort
+
+services:
+  backend:
+    # Context is the repo root because backend/Dockerfile also needs scripts/.
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: ecosort-backend:dev
+    container_name: ecosort-backend
+    init: true
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-4000}:4000"
+    # Explicit values with ${VAR:-default} so the stack runs with no .env file at all.
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      # The container always listens on 4000; BACKEND_PORT only remaps the host side.
+      BACKEND_PORT: "4000"
+      # Container-side paths: these are wired to the volume mounts below, so they are
+      # deliberately NOT interpolated from .env (changing them would orphan the mounts).
+      DATA_DIR: /data
+      MODELS_DIR: /models
+      BUNDLED_MODELS_DIR: /app/bundled-models
+      DB_FILE: ${DB_FILE:-/data/ecosort.db}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:${FRONTEND_PORT:-5173},http://localhost:${FRONTEND_PROD_PORT:-8080}}
+      MAX_IMAGE_DATA_URL: ${MAX_IMAGE_DATA_URL:-400000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DEFAULT_REGION: ${DEFAULT_REGION:-us-generic}
+    volumes:
+      # Host-side models win over the copy baked into the image, so a freshly trained
+      # models/custom/ appears without rebuilding.
+      - ./models:/models
+      - ecosort-data:/data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+    image: ecosort-frontend:dev
+    container_name: ecosort-frontend
+    init: true
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      NODE_ENV: development
+      # Vite proxies /api and /models here, so the browser only ever sees same-origin URLs.
+      VITE_PROXY_TARGET: http://backend:4000
+      VITE_API_BASE: ${VITE_API_BASE:-}
+      # Extra hostnames the dev server will answer to, on top of localhost and the
+      # built-in dev-tunnel suffixes. `*` allows any host. See .env.example.
+      VITE_ALLOWED_HOSTS: ${VITE_ALLOWED_HOSTS:-}
+      # Only needed when serving through an HTTPS tunnel, so the HMR socket dials the
+      # public port instead of 5173: set these to 443 and wss.
+      VITE_HMR_CLIENT_PORT: ${VITE_HMR_CLIENT_PORT:-}
+      VITE_HMR_PROTOCOL: ${VITE_HMR_PROTOCOL:-}
+      # Bind-mounted sources on some hosts (macOS, Windows, some VMs) do not deliver
+      # inotify events; set CHOKIDAR_USEPOLLING=true in .env if HMR goes quiet.
+      CHOKIDAR_USEPOLLING: ${CHOKIDAR_USEPOLLING:-false}
+    volumes:
+      - ./frontend:/app
+      # Anonymous volume: keeps the container's Linux-built node_modules from being
+      # shadowed by the host bind mount above.
+      - /app/node_modules
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  ecosort-data:
+    name: ecosort-data

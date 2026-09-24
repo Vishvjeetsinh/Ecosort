@@ -1,0 +1,191 @@
+{
+  "categories": [
+    {
+      "id": "plastic",
+      "label": "Plastic",
+      "shortLabel": "Plastic",
+      "description": "Bottles, tubs, trays, film and other packaging moulded from plastics such as PET, HDPE or polypropylene.",
+      "icon": "🧴",
+      "colorHex": "#2563eb",
+      "textColorHex": "#ffffff",
+      "examples": [
+        "Water and soft-drink bottles",
+        "Milk jugs and detergent bottles",
+        "Yoghurt pots and margarine tubs",
+        "Fruit punnets and berry clamshells",
+        "Shampoo and lotion bottles",
+        "Bottle caps and screw lids",
+        "Cling film, bread bags and carrier bags",
+        "Plastic cutlery and drinking straws"
+      ]
+    },
+    {
+      "id": "paper",
+      "label": "Paper",
+      "shortLabel": "Paper",
+      "description": "Printed and writing paper such as newspapers, magazines, envelopes and office sheets, with no plastic coating.",
+      "icon": "📰",
+      "colorHex": "#0ea5e9",
+      "textColorHex": "#111827",
+      "examples": [
+        "Newspapers and supplements",
+        "Magazines and catalogues",
+        "Office, printer and notebook paper",
+        "Envelopes, including window envelopes",
+        "Junk mail, flyers and leaflets",
+        "Paper bags without plastic handles",
+        "Greetings cards without glitter or foil",
+        "Shredded paper, contained in a paper bag"
+      ]
+    },
+    {
+      "id": "cardboard",
+      "label": "Cardboard",
+      "shortLabel": "Cardboard",
+      "description": "Corrugated shipping boxes and thinner paperboard packaging such as cereal boxes, egg trays and drink cartons.",
+      "icon": "📦",
+      "colorHex": "#b45309",
+      "textColorHex": "#ffffff",
+      "examples": [
+        "Corrugated delivery and moving boxes",
+        "Cereal, pasta and shoe boxes",
+        "Egg boxes and paper fruit trays",
+        "Kitchen and toilet roll tubes",
+        "Beverage cartons for milk and juice",
+        "Pizza boxes with no greasy residue",
+        "Paperboard sleeves and gift boxes"
+      ]
+    },
+    {
+      "id": "glass",
+      "label": "Glass",
+      "shortLabel": "Glass",
+      "description": "Container glass only: bottles and jars that once held drinks, food, sauces or cosmetics, empty and lid removed.",
+      "icon": "🫙",
+      "colorHex": "#059669",
+      "textColorHex": "#111827",
+      "examples": [
+        "Wine, beer and spirit bottles",
+        "Jam, pickle and sauce jars",
+        "Glass soft-drink bottles",
+        "Coffee and instant-drink jars",
+        "Perfume and cosmetic bottles",
+        "Baby-food jars",
+        "Glass olive oil and vinegar bottles"
+      ]
+    },
+    {
+      "id": "metal",
+      "label": "Metal",
+      "shortLabel": "Metal",
+      "description": "Household metal packaging and small metal objects: steel food tins, aluminium cans, foil, trays and empty aerosols.",
+      "icon": "🥫",
+      "colorHex": "#64748b",
+      "textColorHex": "#ffffff",
+      "examples": [
+        "Aluminium drink cans",
+        "Steel food and pet-food tins",
+        "Clean aluminium foil and foil trays",
+        "Empty aerosol cans, such as deodorant",
+        "Metal jar lids and bottle caps",
+        "Biscuit and sweet tins",
+        "Clean metal pie and takeaway dishes",
+        "Small metal utensils and cutlery"
+      ]
+    },
+    {
+      "id": "organic",
+      "label": "Organic / Food",
+      "shortLabel": "Organic",
+      "description": "Food scraps, cooked leftovers and garden trimmings that can be composted or digested into biogas and soil conditioner.",
+      "icon": "🍎",
+      "colorHex": "#65a30d",
+      "textColorHex": "#111827",
+      "examples": [
+        "Fruit and vegetable peelings",
+        "Plate scrapings and cooked leftovers",
+        "Bread, rice, pasta and pastry",
+        "Meat, fish and bones",
+        "Tea bags and coffee grounds",
+        "Eggshells and dairy leftovers",
+        "Grass cuttings, leaves and prunings",
+        "Cut flowers and houseplants"
+      ]
+    },
+    {
+      "id": "ewaste",
+      "label": "Electronics",
+      "shortLabel": "E-waste",
+      "description": "Anything with a plug, a battery or a circuit board, from phones and cables to kettles, toys and small appliances.",
+      "icon": "🔌",
+      "colorHex": "#7c3aed",
+      "textColorHex": "#ffffff",
+      "examples": [
+        "Mobile phones and tablets",
+        "Laptops, keyboards and mice",
+        "Chargers, cables and power banks",
+        "Kettles, toasters and hair dryers",
+        "Headphones and speakers",
+        "Printers and routers",
+        "Battery-powered toys",
+        "Televisions and monitors"
+      ]
+    },
+    {
+      "id": "hazardous",
+      "label": "Hazardous",
+      "shortLabel": "Hazard",
+      "description": "Household chemicals and products that burn, corrode, poison or start fires in collection trucks if binned normally.",
+      "icon": "⚠️",
+      "colorHex": "#dc2626",
+      "textColorHex": "#ffffff",
+      "examples": [
+        "Household and button batteries",
+        "Lithium-ion battery packs",
+        "Paint, varnish and thinners",
+        "Motor oil, brake fluid and antifreeze",
+        "Weedkiller, pesticides and pool chemicals",
+        "Fluorescent tubes and energy-saving bulbs",
+        "Expired or unused medicines",
+        "Nail polish, solvents and gas canisters"
+      ]
+    },
+    {
+      "id": "textile",
+      "label": "Textiles",
+      "shortLabel": "Textiles",
+      "description": "Clothing, footwear and household fabric, whether wearable or worn out, kept clean and dry for reuse or fibre recycling.",
+      "icon": "👕",
+      "colorHex": "#db2777",
+      "textColorHex": "#ffffff",
+      "examples": [
+        "Shirts, trousers, dresses and coats",
+        "Shoes and boots, tied in pairs",
+        "Bed linen, towels and blankets",
+        "Curtains and fabric offcuts",
+        "Handbags, belts and scarves",
+        "Knitwear and worn-out jeans",
+        "Soft toys in clean condition"
+      ]
+    },
+    {
+      "id": "trash",
+      "label": "General Waste",
+      "shortLabel": "General",
+      "description": "Items with no local recycling route, plus anything the classifier is unsure about — when in doubt, this is the safe bin.",
+      "icon": "🗑️",
+      "colorHex": "#44403c",
+      "textColorHex": "#ffffff",
+      "examples": [
+        "Crisp packets and sweet wrappers",
+        "Nappies and sanitary products",
+        "Polystyrene foam packaging",
+        "Broken crockery and drinking glasses",
+        "Used tissues and kitchen roll",
+        "Cigarette butts and ash",
+        "Vacuum-cleaner dust and contents",
+        "Composite pouches for pet food or coffee"
+      ]
+    }
+  ]
+}

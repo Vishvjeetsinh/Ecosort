@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f8fafc" id="meta-theme-color" />
+    <title>EcoSort — Offline Waste Sorting Assistant</title>
+    <meta
+      name="description"
+      content="Point your webcam at an item or upload a photo: EcoSort classifies it into a waste category and shows the right bin, prep steps and local recycling rules. Runs entirely offline in your browser."
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23059669'/%3E%3Cpath d='M16 4.6l4.7 8.1h-3.3v4.9h-2.8v-4.9h-3.3L16 4.6z' fill='%23ffffff'/%3E%3Cpath d='M6.4 22.9l4.1-7.1 2.4 1.4-2.7 4.7 4.7 2.7-1.4 2.4-7.1-4.1z' fill='%23ffffff' fill-opacity='.85'/%3E%3Cpath d='M25.6 22.9l-7.1 4.1-1.4-2.4 4.7-2.7-2.7-4.7 2.4-1.4 4.1 7.1z' fill='%23ffffff' fill-opacity='.7'/%3E%3C/svg%3E"
+    />
+    <script>
+      /*
+       * Applied before first paint so a dark-mode user never sees a white flash.
+       * useLocalStorage stores JSON, so the value arrives quoted ("dark"); older
+       * or hand-edited values may be bare — strip quotes defensively.
+       */
+      (function () {
+        try {
+          var raw = window.localStorage.getItem('ecosort:theme');
+          var theme = raw ? String(raw).replace(/^"|"$/g, '') : '';
+          if (theme !== 'dark' && theme !== 'light') {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+          var meta = document.getElementById('meta-theme-color');
+          if (meta) meta.setAttribute('content', theme === 'dark' ? '#020617' : '#f8fafc');
+        } catch (err) {
+          /* Storage can be blocked entirely (private mode / cookies off): light is fine. */
+          void err;
+        }
+      })();
+    </script>
+  </head>
+  <body class="h-full">
+    <div id="root" class="h-full"></div>
+    <noscript>
+      <p style="padding: 1.5rem; font-family: system-ui, sans-serif">
+        EcoSort runs its classifier in your browser and needs JavaScript enabled.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

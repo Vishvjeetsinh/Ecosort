@@ -1,0 +1,18 @@
+# Build context for frontend/Dockerfile.
+
+.git
+node_modules
+dist
+build
+.vite
+coverage
+.env
+.env.local
+.env.*.local
+*.db
+*.db-wal
+*.db-shm
+Dockerfile
+.dockerignore
+npm-debug.log*
+.DS_Store

@@ -1,0 +1,59 @@
+# EcoSort training pipeline - HOST-side dependencies (Python 3.10 - 3.12).
+#
+# These are NOT installed in any Docker image. The app itself runs inference in the
+# browser with @tensorflow/tfjs; Python is only needed when you want to train your own
+# model. Install into a dedicated virtualenv:
+#
+#     python3 -m venv ml/.venv && . ml/.venv/bin/activate
+#     pip install -U pip && pip install -r ml/requirements.txt
+#
+# VERSION COUPLING (the thing that breaks installs):
+#   Let `tensorflowjs` choose the TensorFlow version. It pins the TF minor it was built
+#   against, so adding your own `tensorflow<2.17`-style bound on top makes pip backtrack
+#   and then fail outright with ResolutionImpossible -- on Python 3.12 especially, because
+#   TensorFlow 2.15 publishes no cp312 wheel while tensorflowjs's own dependency chain
+#   wants one. Pin tensorflowjs; leave TensorFlow to follow.
+#
+#   Verified resolution on Python 3.12 (this is what you will get):
+#       tensorflowjs 4.22.0 -> tensorflow 2.19.0, keras 3.15.1, numpy 2.1.3, jax/jaxlib 0.11.2
+#
+#   Keras 3 is the default in TensorFlow 2.16+. `ml/export_tfjs.py` handles that: it tries
+#   the tensorflowjs Python API first and falls back to the `tensorflowjs_converter` CLI
+#   (.h5, then .keras) so the conversion works on both the Keras 2 and Keras 3 stacks.
+#
+#   Budget ~2 GB of disk for the venv.
+#
+# APPLE SILICON:
+#   TensorFlow publishes arm64 macOS wheels from 2.16 onwards, so the line below works
+#   as-is. Only on older macOS setups do you need `tensorflow-macos` instead -- and if you
+#   swap it in, remove the plain `tensorflow` line rather than installing both.
+#
+# GPU (Linux/NVIDIA): add `tensorflow[and-cuda]` alongside the pins below.
+
+# Pin the converter; TensorFlow and Keras come along at compatible versions.
+tensorflowjs>=4.22,<5
+
+# Stated explicitly so `pip check` and `python -c "import tensorflow"` fail loudly if an
+# incompatible TensorFlow is ever forced into this venv. Keep it in step with the line
+# above rather than tightening it independently.
+tensorflow>=2.19,<2.20
+
+# --- Two pins that keep the tensorflowjs import working -------------------------
+# Both were found by actually installing this file on Python 3.12; without them
+# `import tensorflowjs` raises before it can convert anything.
+#
+# ydf >= 0.16 ships protobuf gencode 6.31.1, but TensorFlow 2.19 pins the protobuf
+# runtime to <6 (5.29.x). Importing tensorflowjs -> tensorflow_decision_forests ->
+# yggdrasil_decision_forests then dies with
+#   "Detected incompatible Protobuf Gencode/Runtime versions ... gencode 6.31.1 runtime 5.29.6".
+# ydf 0.15.x is generated with protobuf 5.29.2 and loads cleanly.
+ydf<0.16
+
+# setuptools 81 removed `pkg_resources`, which tensorflow_hub 0.16.1 still imports at
+# module load time ("ModuleNotFoundError: No module named 'pkg_resources'"). Python 3.12
+# venvs no longer preinstall setuptools, so pin it rather than relying on the default.
+setuptools<81
+
+pillow>=10,<12
+matplotlib>=3.7,<4
+scikit-learn>=1.3,<2

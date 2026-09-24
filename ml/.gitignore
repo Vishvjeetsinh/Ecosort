@@ -1,0 +1,32 @@
+# Training runs never belong in git - they are large, machine-specific and reproducible.
+
+# Virtualenvs
+.venv/
+venv/
+env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Prepared dataset (built by prepare_dataset.py from source/)
+dataset/
+
+# Checkpoints, plots, logs, reports, TensorBoard runs
+artifacts/
+
+# Keras model files, wherever they land
+*.keras
+*.h5
+*.hdf5
+
+# Raw collected images: ignore the pictures, keep the scaffolded README in each folder.
+source/**/*.jpg
+source/**/*.jpeg
+source/**/*.png
+source/**/*.bmp
+source/**/*.webp
+source/**/*.JPG
+source/**/*.JPEG
+source/**/*.PNG

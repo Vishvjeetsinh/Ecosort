@@ -1,0 +1,53 @@
+# Root build context (used by backend/Dockerfile, which needs backend/ + scripts/).
+# Everything excluded here stays out of the daemon's build context.
+
+.git
+.gitignore
+.github
+
+# Dependencies and build output are reinstalled/rebuilt inside the image.
+node_modules
+**/node_modules
+dist
+**/dist
+build
+**/build
+.vite
+**/.vite
+coverage
+**/coverage
+
+# Secrets and local overrides never belong in an image.
+.env
+.env.local
+.env.*.local
+
+# Local database files.
+*.db
+*.db-wal
+*.db-shm
+backend/data
+
+# The backend fetches its own copy of the model into BUNDLED_MODELS_DIR at build time,
+# and MODELS_DIR is bind-mounted at runtime - baking the host copy in would double
+# the image size for nothing.
+models
+
+# Training assets are huge and irrelevant to the runtime images.
+ml/dataset
+ml/artifacts
+ml/.venv
+ml/venv
+**/__pycache__
+
+# The frontend is built from its own context.
+frontend
+
+# Docs and infra descriptors.
+docs
+README.md
+Makefile
+docker-compose*.yml
+**/Dockerfile
+**/.dockerignore
+.DS_Store

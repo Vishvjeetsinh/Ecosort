@@ -1,0 +1,2832 @@
+{
+  "defaultRegion": "us-generic",
+  "regions": [
+    {
+      "id": "us-generic",
+      "name": "United States — generic single-stream kerbside",
+      "country": "United States",
+      "authority": "Municipal solid waste department (single-stream kerbside programme)",
+      "updated": "2026-01-15",
+      "notes": "Almost every US household programme is single-stream: all containers and paper go loose into one blue cart and are separated later at a materials recovery facility (MRF). The rule that decides most items is \"bottles, tubs, jugs and paper only\" — if it is filmy, foam or smaller than a credit card it is not recyclable kerbside. The single most common mistake is bagging recyclables in a plastic sack, which makes a MRF sorter pull the whole bag out as trash.",
+      "bins": [
+        {
+          "id": "recycling-cart",
+          "name": "Recycling cart",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "plastic",
+            "paper",
+            "cardboard",
+            "glass",
+            "metal"
+          ],
+          "description": "The blue single-stream cart for clean, empty, loose containers and paper. Collected weekly or every other week."
+        },
+        {
+          "id": "yard-organics-cart",
+          "name": "Yard waste / organics cart",
+          "colorName": "Green or brown",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "organic"
+          ],
+          "description": "Seasonal or year-round cart for grass, leaves and prunings; a growing number of cities also take food scraps in it."
+        },
+        {
+          "id": "trash-cart",
+          "name": "Trash cart",
+          "colorName": "Black or grey",
+          "colorHex": "#3f3f46",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "trash"
+          ],
+          "description": "Landfill or waste-to-energy cart for everything with no local recovery route. Bag the contents; keep it lid-closed."
+        },
+        {
+          "id": "hhw-dropoff",
+          "name": "Household hazardous waste & electronics drop-off",
+          "colorName": "Orange (facility signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "ewaste",
+            "hazardous"
+          ],
+          "description": "County transfer station, permanent HHW facility or a collection event. Free for residents in most counties; proof of residence may be required."
+        },
+        {
+          "id": "donation-textile",
+          "name": "Donation or textile take-back bin",
+          "colorName": "Pink / charity branding",
+          "colorHex": "#db2777",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "textile"
+          ],
+          "description": "Charity thrift stores, kerbside clothing-collection programmes and retailer take-back boxes accept wearable and worn-out fabric alike."
+        }
+      ],
+      "categories": {
+        "plastic": {
+          "categoryId": "plastic",
+          "binId": "recycling-cart",
+          "binName": "Recycling cart",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Empty and rinse the container, then put it loose in the blue recycling cart.",
+          "prepSteps": [
+            "Tip out every drop of liquid or food",
+            "Rinse with cold water until no residue remains",
+            "Screw the cap back on the bottle — loose caps fall through the sorting screens",
+            "Leave containers loose; never put them in a bag"
+          ],
+          "acceptedExamples": [
+            "PET water and soda bottles (#1)",
+            "HDPE milk jugs and detergent bottles (#2)",
+            "Yoghurt, sour cream and deli tubs (#5)",
+            "Shampoo, conditioner and lotion bottles",
+            "Plastic peanut-butter and mayonnaise jars",
+            "Rigid laundry-detergent jugs"
+          ],
+          "rejectedExamples": [
+            "Grocery bags and shrink film (they tangle in the MRF screens and stop the line)",
+            "Polystyrene foam cups and takeout trays (no end market in nearly all US programmes)",
+            "Plastic straws and cutlery (too small and light to be sorted mechanically)",
+            "Motor oil and pesticide bottles (chemical residue makes the whole bale hazardous)",
+            "Compostable PLA cups and lids (they look like PET and ruin the recycled resin)"
+          ],
+          "notes": "Resin codes 1, 2 and 5 in bottle, tub or jug form are recycled almost everywhere; other shapes and codes depend on your MRF's equipment. Curbside programmes recycle the shape, not the number.",
+          "dropOff": "Plastic bags, wraps and bubble mailers: front-of-store film collection bins at most large grocery and home-improvement chains."
+        },
+        "paper": {
+          "categoryId": "paper",
+          "binId": "recycling-cart",
+          "binName": "Recycling cart",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put clean, dry paper loose in the blue recycling cart.",
+          "prepSteps": [
+            "Keep it dry — wet fibre is worthless and is screened out as trash",
+            "Leave staples and window envelopes in place; the pulping process removes them",
+            "Bag shredded paper inside a paper bag so it does not blow across the sorting line",
+            "Remove plastic bubble liners from padded mailers"
+          ],
+          "acceptedExamples": [
+            "Newspapers and their glossy inserts",
+            "Magazines, catalogues and phone books",
+            "Office paper, school work and notebooks",
+            "Envelopes, including window envelopes",
+            "Junk mail and flyers",
+            "Paper grocery bags"
+          ],
+          "rejectedExamples": [
+            "Paper towels, tissues and napkins (fibres are too short and soiled to re-pulp)",
+            "Receipts on thermal paper (BPA/BPS coating contaminates recycled pulp)",
+            "Photographs and laminated sheets (plastic layer cannot be separated)",
+            "Paper plates with food residue (grease and food ruin the bale)",
+            "Glitter and foil greeting cards (metallised film is not fibre)"
+          ],
+          "notes": "Mixed paper prices collapsed after China's 2018 import ban, so US MRFs are strict about moisture and food contamination. One soaked pizza box can downgrade a whole bale.",
+          "dropOff": "Confidential documents: community shred events, or shred at home and bag the shreds in paper."
+        },
+        "cardboard": {
+          "categoryId": "cardboard",
+          "binId": "recycling-cart",
+          "binName": "Recycling cart",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Flatten the box and put it in the blue recycling cart, or stack it beside the cart if your programme allows.",
+          "prepSteps": [
+            "Remove packing tape, labels and any plastic or foam inserts",
+            "Flatten every box so the cart holds more and the lid closes",
+            "Tear off and trash any greasy or food-soaked sections",
+            "Keep cartons separate from liquid — empty and rinse them first"
+          ],
+          "acceptedExamples": [
+            "Corrugated shipping and moving boxes",
+            "Cereal, cracker and shoe boxes",
+            "Paper egg cartons",
+            "Toilet-paper and kitchen-roll tubes",
+            "Milk and juice cartons (gable-top and aseptic)",
+            "Clean pizza-box lids"
+          ],
+          "rejectedExamples": [
+            "Greasy pizza-box bases (oil cannot be washed out of fibre)",
+            "Wax-coated produce boxes (the wax layer blocks re-pulping)",
+            "Boxes still full of packing peanuts or air pillows (loose film jams the plant)",
+            "Wet or mouldy cardboard left out in the rain (weight is water, fibre is ruined)"
+          ],
+          "notes": "Old corrugated containers (OCC) are the most valuable thing in your cart, so flattening matters — an unflattened box takes five times the volume and can block collection arms on automated trucks.",
+          "dropOff": "Large moving-box quantities: county transfer station cardboard bunker, usually free for residents."
+        },
+        "glass": {
+          "categoryId": "glass",
+          "binId": "recycling-cart",
+          "binName": "Recycling cart",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse the bottle or jar, remove the lid, and place it in the blue recycling cart.",
+          "prepSteps": [
+            "Empty and rinse; labels can stay on",
+            "Put metal lids in the cart separately — they are recycled as steel",
+            "Do not break bottles deliberately; broken glass is harder to sort and unsafe for crews",
+            "Keep ceramics, window glass and Pyrex out entirely"
+          ],
+          "acceptedExamples": [
+            "Beer, wine and spirit bottles",
+            "Pasta sauce and salsa jars",
+            "Pickle and jam jars",
+            "Glass soda bottles",
+            "Instant-coffee jars",
+            "Glass baby-food jars"
+          ],
+          "rejectedExamples": [
+            "Drinking glasses and Pyrex dishes (heat-treated glass melts at a different temperature and ruins the batch)",
+            "Window and mirror glass (different chemistry, plus coatings)",
+            "Ceramic mugs and plates (they never melt and show up as stones in new bottles)",
+            "Light bulbs of any kind (metal bases and, for CFLs, mercury)"
+          ],
+          "notes": "A handful of US programmes have dropped glass from single-stream because broken shards contaminate paper; check your hauler's list. Ten states also run bottle-deposit schemes where returning the container pays 5-10 cents.",
+          "dropOff": "If glass is excluded locally: supermarket or transfer-station glass igloos, and bottle-deposit redemption centres in CA, CT, HI, IA, ME, MA, MI, NY, OR and VT."
+        },
+        "metal": {
+          "categoryId": "metal",
+          "binId": "recycling-cart",
+          "binName": "Recycling cart",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse cans and tins and put them loose in the blue recycling cart.",
+          "prepSteps": [
+            "Empty and rinse food residue out of tins",
+            "Push the cut steel lid down inside the tin so no one is cut",
+            "Scrunch clean foil into a ball at least the size of a golf ball, so it is heavy enough to sort",
+            "Make sure aerosols are completely empty; do not pierce or crush them"
+          ],
+          "acceptedExamples": [
+            "Aluminium beverage cans",
+            "Steel soup, bean and pet-food tins",
+            "Clean aluminium foil and pie plates",
+            "Empty aerosol cans such as deodorant or hairspray",
+            "Metal jar lids and bottle caps",
+            "Clean foil takeaway trays"
+          ],
+          "rejectedExamples": [
+            "Paint cans with dried or wet paint inside (hazardous residue — HHW facility)",
+            "Propane cylinders and camping canisters (they explode in the truck compactor)",
+            "Scrap metal, pipes and pans (too heavy and bulky for the MRF; take to scrap)",
+            "Foil coated with grease or cheese (contaminates the aluminium bale)",
+            "Coat hangers (they wrap around the sorting screens)"
+          ],
+          "notes": "Aluminium is the one material that pays for the whole recycling programme — a can is back on the shelf in about 60 days and uses 95% less energy than new metal.",
+          "dropOff": "Scrap metal, appliances and pans: local scrap yard, which usually pays by weight for clean aluminium and copper."
+        },
+        "organic": {
+          "categoryId": "organic",
+          "binId": "yard-organics-cart",
+          "binName": "Yard waste / organics cart",
+          "colorName": "Green or brown",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put yard trimmings — and food scraps if your city collects them — in the green organics cart.",
+          "prepSteps": [
+            "Check whether your programme takes food scraps or yard debris only",
+            "Use paper bags or a certified compostable liner, never a plastic bag",
+            "Keep soil, rocks and sod out; they are too heavy and abrasive for the grinder",
+            "Cut branches to under 4 ft and bundle them if required"
+          ],
+          "acceptedExamples": [
+            "Grass clippings and raked leaves",
+            "Prunings and small branches",
+            "Fruit and vegetable scraps (food-scrap programmes)",
+            "Coffee grounds and paper filters",
+            "Eggshells",
+            "Houseplants and cut flowers"
+          ],
+          "rejectedExamples": [
+            "Plastic bags, even 'biodegradable' ones (they shred into microplastic in the compost)",
+            "Pet waste and cat litter (pathogens survive in open windrow composting)",
+            "Treated or painted lumber (preservative chemicals end up in finished compost)",
+            "Rocks, dirt and sod (they wreck the grinder and add no nutrients)",
+            "Meat and dairy where the programme is yard-waste only (they attract vermin at the facility)"
+          ],
+          "notes": "Food waste is roughly a quarter of what a US household throws away and generates methane in landfills, so cities such as Seattle, San Francisco and Portland now mandate food-scrap separation. Elsewhere the green cart is strictly yard debris.",
+          "dropOff": "No organics cart? Backyard compost bin, community garden compost drop-off, or a farmers'-market food-scrap collection."
+        },
+        "ewaste": {
+          "categoryId": "ewaste",
+          "binId": "hhw-dropoff",
+          "binName": "Household hazardous waste & electronics drop-off",
+          "colorName": "Orange (facility signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Take electronics to a county e-waste drop-off, a collection event or a retailer take-back counter — never the kerbside carts.",
+          "prepSteps": [
+            "Wipe or factory-reset the device and remove SIM and memory cards",
+            "Remove loose batteries and hand them over separately",
+            "Keep the cables and charger with the device — they are recycled with it",
+            "Check state rules: 25 states ban electronics from landfill, so kerbside disposal can be illegal"
+          ],
+          "acceptedExamples": [
+            "Laptops, tablets and mobile phones",
+            "Televisions and computer monitors",
+            "Printers, routers and keyboards",
+            "Chargers, power bricks and cables",
+            "Small kitchen appliances such as toasters and kettles",
+            "Games consoles and controllers"
+          ],
+          "rejectedExamples": [
+            "CRT televisions at generic scrap yards (leaded glass needs a certified processor)",
+            "Devices with swollen lithium batteries (fire risk — ask for hazardous handling)",
+            "Smoke detectors (they contain americium-241; return to the manufacturer)",
+            "Large appliances with refrigerant, such as fridges (need certified refrigerant recovery)"
+          ],
+          "notes": "Best Buy and Staples take most small electronics free of charge regardless of where they were bought, and many manufacturers run prepaid mail-back programmes. Check for an R2 or e-Stewards certified recycler if data security matters.",
+          "dropOff": "County household hazardous waste facility, municipal e-waste day, or a national retailer take-back counter."
+        },
+        "hazardous": {
+          "categoryId": "hazardous",
+          "binId": "hhw-dropoff",
+          "binName": "Household hazardous waste & electronics drop-off",
+          "colorName": "Orange (facility signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Take it to the county household hazardous waste (HHW) facility or a collection event — never any kerbside cart.",
+          "prepSteps": [
+            "Keep everything in its original, labelled container",
+            "Never mix two chemicals together in one jug",
+            "Tape the terminals of lithium and button batteries before transport",
+            "Transport upright in a box in the boot, away from passengers"
+          ],
+          "acceptedExamples": [
+            "Latex and oil-based paint, stain and thinners",
+            "Motor oil, antifreeze and brake fluid",
+            "Pesticides, herbicides and pool chemicals",
+            "Household, button and lithium-ion batteries",
+            "Fluorescent tubes and CFL bulbs",
+            "Propane cylinders and pilot-light fuels"
+          ],
+          "rejectedExamples": [
+            "Batteries in the blue cart (crushed lithium cells are the leading cause of MRF fires)",
+            "Paint poured down the drain or into the yard (it contaminates water and soil)",
+            "Medicines flushed down the toilet (they pass through treatment plants into rivers)",
+            "Used motor oil in the trash cart (one gallon can foul a million gallons of water)",
+            "Empty-looking aerosols that still hiss (residual propellant ignites in the truck)"
+          ],
+          "notes": "Fully dried latex paint is the exception: in most counties you can add cat litter or a paint hardener, let it dry solid, and put the open can in the trash cart. Oil-based paint never qualifies.",
+          "dropOff": "County HHW facility; medicines go to a pharmacy or police-station take-back kiosk (DEA National Prescription Drug Take Back Day each spring and autumn)."
+        },
+        "textile": {
+          "categoryId": "textile",
+          "binId": "donation-textile",
+          "binName": "Donation or textile take-back bin",
+          "colorName": "Pink / charity branding",
+          "colorHex": "#db2777",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Bag clean, dry clothing and textiles and take them to a charity shop or a textile collection bin.",
+          "prepSteps": [
+            "Wash and dry everything — wet fabric moulds and spoils the whole bale",
+            "Tie shoes together in pairs so they are not separated",
+            "Bag items so they stay dry inside the collection bin",
+            "Send worn-out and stained items too; they are graded for wiping cloths and insulation fibre"
+          ],
+          "acceptedExamples": [
+            "Clothing of any condition, if clean and dry",
+            "Shoes, boots and trainers in pairs",
+            "Bed linen, towels and blankets",
+            "Curtains and fabric offcuts",
+            "Handbags, belts and hats",
+            "Soft toys in good condition"
+          ],
+          "rejectedExamples": [
+            "Textiles in the blue recycling cart (fabric wraps around MRF shafts and shuts the line down)",
+            "Mouldy or mildewed fabric (it contaminates everything packed with it)",
+            "Fabric soaked in oil, solvent or paint (a spontaneous-combustion risk — HHW)",
+            "Carpet and underlay (different recycling stream; ask a carpet retailer or CARE programme)"
+          ],
+          "notes": "Only about 15% of US textile waste is currently collected, yet roughly 95% of what is collected can be reused or recycled — condition matters far less than dryness. Many retailers now run in-store take-back with a discount voucher.",
+          "dropOff": "Charity thrift stores, Goodwill/Salvation Army donation centres, retailer take-back boxes and municipal textile collection bins."
+        },
+        "trash": {
+          "categoryId": "trash",
+          "binId": "trash-cart",
+          "binName": "Trash cart",
+          "colorName": "Black or grey",
+          "colorHex": "#3f3f46",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Bag it and put it in the black or grey trash cart.",
+          "prepSteps": [
+            "Bag loose waste so it does not blow out of the truck",
+            "Drain liquids first — they add weight and leak in the compactor",
+            "Wrap broken glass and sharp objects in cardboard and label them",
+            "Keep the lid closed so the automated arm can lift the cart"
+          ],
+          "acceptedExamples": [
+            "Crisp packets, sweet wrappers and snack pouches",
+            "Nappies and sanitary products",
+            "Polystyrene foam packaging and peanuts",
+            "Broken crockery and drinking glasses",
+            "Used tissues, paper towels and napkins",
+            "Pet waste and used cat litter"
+          ],
+          "rejectedExamples": [
+            "Batteries and electronics (banned from landfill in many states; fire risk in the truck)",
+            "Liquid paint or chemicals (they leak into groundwater at the landfill)",
+            "Hot ashes or barbecue coals (they have set alight many collection trucks)",
+            "Construction debris and concrete (weight limits; take to a transfer station)",
+            "Medical sharps loose in a bag (crews get needlestick injuries — use a sharps container)"
+          ],
+          "notes": "If a classification is uncertain, the trash cart is the safe answer: a recyclable in the trash costs one item, whereas a contaminant in the recycling cart can downgrade an entire truckload.",
+          "dropOff": "Bulky items and furniture: municipal bulky-waste pickup by appointment, or the county transfer station."
+        }
+      }
+    },
+    {
+      "id": "uk-london",
+      "name": "London — typical borough kerbside collection",
+      "country": "United Kingdom (England)",
+      "authority": "London borough council waste service, working with the statutory waste disposal authority (e.g. North London Waste Authority or Western Riverside Waste Authority)",
+      "updated": "2026-02-02",
+      "notes": "England has no single national scheme: each of the 32 London boroughs sets its own containers, so your neighbour one street away may have a box where you have a blue-lidded wheelie bin. What is now consistent under Simpler Recycling is that dry recyclables are collected together, food waste is collected weekly in a small caddy, and everything else is general waste. The most common mistake is putting recycling out inside a black bin bag — most boroughs will leave the bag uncollected because crews cannot see the contents.",
+      "bins": [
+        {
+          "id": "recycling",
+          "name": "Mixed recycling bin or box",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "plastic",
+            "paper",
+            "cardboard",
+            "glass",
+            "metal"
+          ],
+          "description": "Blue-lidded wheelie bin, blue box or clear recycling sack for co-mingled dry recycling. Collected weekly or fortnightly depending on the borough."
+        },
+        {
+          "id": "food-caddy",
+          "name": "Food waste caddy",
+          "colorName": "Green (kitchen caddy) / brown kerbside caddy",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "organic"
+          ],
+          "description": "Small lockable outdoor caddy emptied weekly, sent to anaerobic digestion. Garden waste usually needs a separate paid brown-bin subscription."
+        },
+        {
+          "id": "general",
+          "name": "General waste bin",
+          "colorName": "Black",
+          "colorHex": "#27272a",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "trash"
+          ],
+          "description": "Black wheelie bin or black sacks for non-recyclable residual waste, collected weekly or fortnightly and sent to energy-from-waste."
+        },
+        {
+          "id": "hwrc",
+          "name": "Reuse & Recycling Centre (HWRC)",
+          "colorName": "Orange (site signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "ewaste",
+            "hazardous"
+          ],
+          "description": "Household Waste and Recycling Centre run by the waste disposal authority. Free for residents; many sites need a booked slot and proof of address."
+        },
+        {
+          "id": "textile-bank",
+          "name": "Textile bank or charity shop",
+          "colorName": "Pink / charity branding",
+          "colorHex": "#db2777",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "textile"
+          ],
+          "description": "Clothing banks in car parks and estates, charity shops, and TRAID-style doorstep collections run in several boroughs."
+        }
+      ],
+      "categories": {
+        "plastic": {
+          "categoryId": "plastic",
+          "binId": "recycling",
+          "binName": "Mixed recycling bin or box",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Empty, rinse and squash plastic bottles, pots, tubs and trays into the blue mixed recycling bin.",
+          "prepSteps": [
+            "Rinse out any food or drink residue",
+            "Squash bottles and put the lid back on",
+            "Take off plastic film lids from trays and put the film in the general waste or a supermarket bag bank",
+            "Put it in loose — not inside a black bag"
+          ],
+          "acceptedExamples": [
+            "Drinks bottles, including fizzy drink and water bottles",
+            "Milk bottles and squash bottles",
+            "Shampoo, bleach and detergent bottles",
+            "Yoghurt pots and margarine tubs",
+            "Fruit punnets and ready-meal trays",
+            "Ice-cream tubs and clean plastic food containers"
+          ],
+          "rejectedExamples": [
+            "Carrier bags and crisp packets (soft plastic — supermarket front-of-store collection only)",
+            "Black plastic meal trays in older borough schemes (optical sorters cannot see carbon black)",
+            "Polystyrene and foam packaging (no UK reprocessing route)",
+            "Plastic toys and coat hangers (not packaging — they are the wrong polymer mix)",
+            "Cling film and bubble wrap (film jams the sorting plant)"
+          ],
+          "notes": "Soft plastic is the dividing line: rigid packaging goes in the blue bin, anything you can scrunch in your fist goes to a supermarket bag bank. A Deposit Return Scheme for single-use drinks containers is due to launch across the UK in October 2027, which will move bottles out of the blue bin.",
+          "dropOff": "Soft plastics, film and crisp packets: front-of-store collection points at large Tesco, Sainsbury's and Co-op stores."
+        },
+        "paper": {
+          "categoryId": "paper",
+          "binId": "recycling",
+          "binName": "Mixed recycling bin or box",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put clean, dry paper loose in the blue mixed recycling bin.",
+          "prepSteps": [
+            "Keep paper dry — a rain-soaked bin load is rejected at the sorting plant",
+            "Leave staples and window envelopes in; they are removed during pulping",
+            "Remove glittery or foiled sections from cards and wrapping",
+            "Do the scrunch test on wrapping paper: if it stays scrunched it is paper, if it springs back it is plastic-coated"
+          ],
+          "acceptedExamples": [
+            "Newspapers and magazines",
+            "Office paper and school books without plastic covers",
+            "Envelopes, including window envelopes",
+            "Junk mail, leaflets and catalogues",
+            "Paper bags",
+            "Plain birthday and Christmas cards"
+          ],
+          "rejectedExamples": [
+            "Till receipts (thermal paper coating contaminates the pulp)",
+            "Kitchen roll and tissues (fibres are too short and usually soiled)",
+            "Wallpaper and laminated paper (adhesive and plastic layers)",
+            "Glittery wrapping paper and cards (glitter is microplastic)",
+            "Wet or greasy paper (moisture and oil ruin the bale)"
+          ],
+          "notes": "Most London boroughs collect paper co-mingled with containers, but a handful — and many estates with communal bins — still ask for paper separately in a blue box to keep it clean and dry. Check your borough's A-Z before assuming.",
+          "dropOff": "Large quantities or confidential paper: the borough's Reuse & Recycling Centre paper bay."
+        },
+        "cardboard": {
+          "categoryId": "cardboard",
+          "binId": "recycling",
+          "binName": "Mixed recycling bin or box",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Flatten the cardboard and put it in the blue mixed recycling bin.",
+          "prepSteps": [
+            "Remove all packing tape, plastic windows and polystyrene inserts",
+            "Flatten boxes so the lid still closes — side waste is often not collected",
+            "Rinse drinks cartons and push the plastic spout back in",
+            "Tear off greasy pizza-box bases for the general waste bin"
+          ],
+          "acceptedExamples": [
+            "Delivery and packaging boxes",
+            "Cereal, biscuit and shoe boxes",
+            "Egg boxes",
+            "Kitchen and toilet roll tubes",
+            "Tetra Pak drinks cartons for milk and juice",
+            "Clean pizza-box lids"
+          ],
+          "rejectedExamples": [
+            "Greasy pizza bases (food oil cannot be pulped out)",
+            "Waxed or plastic-coated boxes (the coating blocks re-pulping)",
+            "Boxes left full of polystyrene or air pillows (crews reject contaminated loads)",
+            "Wet cardboard from an overflowing bin (moisture halves the fibre value)"
+          ],
+          "notes": "Beverage cartons are accepted in the blue bin in most London boroughs because the capital's sorting plants have a carton line — this is genuinely a London advantage, as many English councils still require a carton bank.",
+          "dropOff": "Flat-packed bulk cardboard, or cartons where your borough excludes them: the Reuse & Recycling Centre."
+        },
+        "glass": {
+          "categoryId": "glass",
+          "binId": "recycling",
+          "binName": "Mixed recycling bin or box",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse bottles and jars, take the lids off, and put them in the blue mixed recycling bin.",
+          "prepSteps": [
+            "Rinse and drain; labels can stay on",
+            "Remove metal lids and caps and recycle those separately in the same bin",
+            "Do not smash bottles — broken glass is a hazard for the crew",
+            "Keep Pyrex, drinking glasses and ceramics out entirely"
+          ],
+          "acceptedExamples": [
+            "Wine, beer and spirits bottles",
+            "Jam, sauce and pickle jars",
+            "Glass soft-drink bottles",
+            "Coffee jars",
+            "Perfume and cosmetics bottles with the pump removed",
+            "Glass baby-food jars"
+          ],
+          "rejectedExamples": [
+            "Drinking glasses, Pyrex and heat-resistant dishes (they melt at a different temperature and cause faults in new bottles)",
+            "Window and mirror glass (coated and chemically different — take to the HWRC)",
+            "Ceramic plates and mugs (they survive the furnace as stones)",
+            "Light bulbs (metal fittings; energy-saving bulbs also contain mercury)",
+            "Broken glass loose in the bin (injury risk — wrap it and put it in general waste)"
+          ],
+          "notes": "Almost all London boroughs collect glass co-mingled, but a few estates and blocks of flats have glass-only bring banks instead because broken glass contaminates paper in communal bins.",
+          "dropOff": "Glass bottle banks at supermarket car parks, or the borough Reuse & Recycling Centre for sheet and Pyrex glass."
+        },
+        "metal": {
+          "categoryId": "metal",
+          "binId": "recycling",
+          "binName": "Mixed recycling bin or box",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse tins, cans, foil and empty aerosols and put them in the blue mixed recycling bin.",
+          "prepSteps": [
+            "Rinse cans and tins so they do not attract foxes",
+            "Push the lid inside the tin to keep the sharp edge covered",
+            "Scrunch clean foil into a ball the size of a tennis ball so the magnets and eddy-current separator catch it",
+            "Make sure aerosols are empty; never pierce or flatten them"
+          ],
+          "acceptedExamples": [
+            "Drinks cans",
+            "Food tins and pet-food tins",
+            "Clean kitchen foil and foil trays",
+            "Empty aerosols such as deodorant and shaving foam",
+            "Metal jar lids and bottle caps",
+            "Biscuit and sweet tins"
+          ],
+          "rejectedExamples": [
+            "Paint tins with paint still in them (hazardous residue — take to the HWRC)",
+            "Gas canisters and camping cylinders (explosion risk in the truck)",
+            "Pots, pans and cutlery (scrap metal, not packaging — HWRC)",
+            "Foil with food baked onto it (contamination)",
+            "Crisp packets and sweet wrappers, which look metallic (metallised plastic film, not foil)"
+          ],
+          "notes": "Aluminium recycles endlessly and a UK drinks can can be back on the shelf within about six weeks, so cans are the highest-value item in a London blue bin.",
+          "dropOff": "Scrap metal, pans and larger metal objects: the Reuse & Recycling Centre scrap bay."
+        },
+        "organic": {
+          "categoryId": "organic",
+          "binId": "food-caddy",
+          "binName": "Food waste caddy",
+          "colorName": "Green (kitchen caddy) / brown kerbside caddy",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put all food waste, cooked or raw, into the weekly food waste caddy.",
+          "prepSteps": [
+            "Line the kitchen caddy with a compostable liner or newspaper",
+            "Include cooked food, meat, fish and bones — anaerobic digestion handles them all",
+            "Tie the liner and move it to the outdoor caddy; lock the lid against foxes",
+            "Keep garden waste separate unless you pay for the garden waste subscription"
+          ],
+          "acceptedExamples": [
+            "Plate scrapings and leftovers",
+            "Raw and cooked meat, fish and bones",
+            "Fruit and vegetable peelings",
+            "Bread, rice, pasta and pastry",
+            "Tea bags and coffee grounds",
+            "Eggshells and out-of-date food, out of its packaging"
+          ],
+          "rejectedExamples": [
+            "Food still in its packaging (the plant cannot de-package at most London sites)",
+            "Ordinary plastic bags used as liners (plastic shreds contaminate the digestate)",
+            "Garden waste in the food caddy (different process; needs the garden waste bin)",
+            "Liquids, oil and fat (they clog the collection vehicle — cool, solidify and bin them)",
+            "Compostable coffee cups and cutlery (most London digesters reject certified compostables)"
+          ],
+          "notes": "London food waste mostly goes to anaerobic digestion, producing biogas and a liquid fertiliser, so cooked food, meat and bones are all fine — a real difference from garden composting. Weekly food collections became a statutory requirement for English councils under Simpler Recycling.",
+          "dropOff": "Garden waste: paid brown-bin subscription, or free at the borough Reuse & Recycling Centre green-waste bay."
+        },
+        "ewaste": {
+          "categoryId": "ewaste",
+          "binId": "hwrc",
+          "binName": "Reuse & Recycling Centre (HWRC)",
+          "colorName": "Orange (site signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Take electrical items to the Reuse & Recycling Centre WEEE bay, or use a shop take-back or a borough small-electricals collection.",
+          "prepSteps": [
+            "Wipe personal data and sign out of accounts before you hand anything over",
+            "Take out loose batteries and hand them in separately",
+            "Keep cables with the appliance — they are recycled together",
+            "Book a slot if your borough's site requires one, and bring proof of address"
+          ],
+          "acceptedExamples": [
+            "Kettles, toasters and microwaves",
+            "Laptops, phones and tablets",
+            "Cables, chargers and extension leads",
+            "Hair dryers, straighteners and shavers",
+            "TVs and monitors",
+            "Vacuum cleaners and electric toys"
+          ],
+          "rejectedExamples": [
+            "Small electricals in the blue bin (they are not packaging and cause fires when batteries are crushed)",
+            "Vapes and disposable e-cigarettes in any kerbside bin (lithium cells — retailer take-back is a legal requirement)",
+            "Fridges and freezers left at the kerb (refrigerant gases must be degassed by a licensed operator)",
+            "Items with swollen batteries left loose in a bag (fire risk — tell the site staff)"
+          ],
+          "notes": "Under the WEEE regulations any shop selling electricals over a certain size must take back the old equivalent item, and larger retailers must take small electricals free with no purchase. Several London boroughs also run a free small-WEEE kerbside collection on request.",
+          "dropOff": "Borough Reuse & Recycling Centre, retailer take-back counters, and bring-banks for vapes and batteries in most supermarkets."
+        },
+        "hazardous": {
+          "categoryId": "hazardous",
+          "binId": "hwrc",
+          "binName": "Reuse & Recycling Centre (HWRC)",
+          "colorName": "Orange (site signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Take hazardous household waste to the Reuse & Recycling Centre hazardous bay — never put it in any kerbside bin.",
+          "prepSteps": [
+            "Leave the product in its original labelled container",
+            "Never decant or mix chemicals together",
+            "Tape over the terminals of lithium and button batteries",
+            "Carry containers upright in a box, and tell the site staff what you have brought"
+          ],
+          "acceptedExamples": [
+            "Paint, varnish, white spirit and brush cleaner",
+            "Engine oil and antifreeze",
+            "Garden pesticides and weedkillers",
+            "Household and lithium batteries",
+            "Fluorescent tubes and low-energy bulbs",
+            "Asbestos sheeting, but only by prior arrangement"
+          ],
+          "rejectedExamples": [
+            "Batteries in the black bin (a leading cause of refuse-truck and transfer-station fires in London)",
+            "Paint poured into a drain (it reaches the Thames via the storm system)",
+            "Medicines in the bin or toilet (return them to a pharmacy instead)",
+            "Aerosols pierced or emptied by hand (propellant vapour ignites easily)",
+            "Cooking oil down the sink (it is a major cause of London fatbergs)"
+          ],
+          "notes": "Battery bring-banks are mandatory at any shop selling more than 32 kg of batteries a year, so a supermarket collection point is usually closer than the recycling centre. Most boroughs also take waste engine oil, but only at the HWRC.",
+          "dropOff": "HWRC hazardous bay; batteries at supermarket bring-banks; medicines at any pharmacy; used cooking oil at HWRC oil tanks."
+        },
+        "textile": {
+          "categoryId": "textile",
+          "binId": "textile-bank",
+          "binName": "Textile bank or charity shop",
+          "colorName": "Pink / charity branding",
+          "colorHex": "#db2777",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Bag clean, dry clothing and take it to a charity shop, a textile bank or a doorstep collection.",
+          "prepSteps": [
+            "Wash and fully dry everything first",
+            "Bag it so it stays dry inside the bank",
+            "Tie shoes together in pairs",
+            "Include damaged items — they are graded for fibre recycling and wiping cloths"
+          ],
+          "acceptedExamples": [
+            "Clothing of all kinds, clean and dry",
+            "Paired shoes and boots",
+            "Bed linen, towels and curtains",
+            "Handbags, belts and hats",
+            "Fabric offcuts and remnants",
+            "Clean soft toys"
+          ],
+          "rejectedExamples": [
+            "Textiles in the blue recycling bin (fabric wraps around the sorting plant's shafts)",
+            "Wet or mouldy clothing (it ruins the whole bag)",
+            "Oily rags and paint-soaked cloth (fire risk — HWRC hazardous bay)",
+            "Duvets and pillows at most banks (they are bulky and rarely reusable — check the HWRC)",
+            "Carpet and underlay (separate stream, HWRC only)"
+          ],
+          "notes": "Several London boroughs run doorstep textile collections with TRAID or a charity partner, where you book a bag collection online — a good option if you have no car. Charity shops prefer season-appropriate, sellable items; textile banks take everything clean and dry.",
+          "dropOff": "Charity shops, supermarket and estate clothing banks, retailer take-back schemes, and the Reuse & Recycling Centre textile container."
+        },
+        "trash": {
+          "categoryId": "trash",
+          "binId": "general",
+          "binName": "General waste bin",
+          "colorName": "Black",
+          "colorHex": "#27272a",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Bag it and put it in the black general waste bin.",
+          "prepSteps": [
+            "Bag waste so nothing escapes when the bin is tipped",
+            "Wrap broken glass and sharp items in thick paper first",
+            "Keep the lid closed — an overfull bin is often left uncollected",
+            "Put the bin out the night before or by 6am on collection day"
+          ],
+          "acceptedExamples": [
+            "Crisp packets, sweet wrappers and pet-food pouches",
+            "Nappies and sanitary waste",
+            "Polystyrene and foam packaging",
+            "Broken crockery and drinking glasses",
+            "Used tissues and kitchen roll",
+            "Cat litter and pet bedding"
+          ],
+          "rejectedExamples": [
+            "Batteries and vapes (they ignite in the compactor — a rapidly growing cause of London fires)",
+            "Food waste (it belongs in the weekly caddy and is banned from general waste under Simpler Recycling)",
+            "Electrical items (WEEE must be taken to a recycling centre or shop take-back)",
+            "DIY rubble and soil (not household waste — HWRC, and often chargeable)",
+            "Hot ashes (they have set fire to bins and trucks)"
+          ],
+          "notes": "London's residual waste mostly goes to energy-from-waste plants such as Edmonton or SELCHP rather than landfill, but that is still the most expensive and lowest-value destination — anything recoverable is better off in another bin.",
+          "dropOff": "Bulky furniture and mattresses: borough bulky waste collection (usually chargeable) or the Reuse & Recycling Centre."
+        }
+      }
+    },
+    {
+      "id": "de-berlin",
+      "name": "Berlin — Duales System und BSR",
+      "country": "Germany",
+      "authority": "Berliner Stadtreinigung (BSR) for household, organic and paper waste; the dual systems (ALBA and others) for packaging under the Verpackungsgesetz",
+      "updated": "2026-01-28",
+      "notes": "Germany sorts by packaging law, not by material intuition: the Gelbe Tonne takes any sales packaging made of plastic, metal or composite, which is why a yoghurt pot and a tin can go into the same bin while an identical plastic toy does not. On top of that sits the Pfand system, where single-use bottles and cans carry a 25-cent deposit you get back at a shop machine. The classic mistake is throwing a deposit-bearing PET bottle into the Gelbe Tonne — that is 25 cents thrown away — closely followed by putting non-packaging plastic in the yellow bin.",
+      "bins": [
+        {
+          "id": "gelbe-tonne",
+          "name": "Gelbe Tonne / Gelber Sack",
+          "colorName": "Gelb (yellow)",
+          "colorHex": "#facc15",
+          "textColorHex": "#111827",
+          "accepts": [
+            "plastic",
+            "metal"
+          ],
+          "description": "Sales packaging made of plastic, metal or composite material (Verpackungen aus Kunststoff, Metall und Verbundstoffen), financed by the dual systems."
+        },
+        {
+          "id": "blaue-tonne",
+          "name": "Blaue Tonne (Papiertonne)",
+          "colorName": "Blau (blue)",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "paper",
+            "cardboard"
+          ],
+          "description": "Paper, cardboard and carton (Papier, Pappe, Kartonage). Emptied by BSR or a private paper collector depending on the building."
+        },
+        {
+          "id": "biogut",
+          "name": "Braune Tonne (Biogut)",
+          "colorName": "Braun (brown)",
+          "colorHex": "#78350f",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "organic"
+          ],
+          "description": "Kitchen and garden organics collected by BSR and processed into biogas and compost at the Biogasanlage in Ruhleben."
+        },
+        {
+          "id": "glascontainer",
+          "name": "Altglascontainer",
+          "colorName": "Weiß / Grün / Braun (colour-separated igloos)",
+          "colorHex": "#047857",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "glass"
+          ],
+          "description": "Street-corner bottle banks split by glass colour: Weißglas, Grünglas and Braunglas. Blue and other colours go in the green container."
+        },
+        {
+          "id": "hausmuell",
+          "name": "Hausmülltonne",
+          "colorName": "Grau/Schwarz (grey or black)",
+          "colorHex": "#3f3f46",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "trash"
+          ],
+          "description": "Residual household waste collected by BSR and burned at the Müllheizkraftwerk Ruhleben. The most expensive bin per litre, which is why separation pays."
+        },
+        {
+          "id": "altkleidercontainer",
+          "name": "Altkleidercontainer",
+          "colorName": "Pink/weiß (charity branding)",
+          "colorHex": "#db2777",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "textile"
+          ],
+          "description": "Clothing containers run by BSR, Humana, the DRK and other charities; also BSR NochMall, the reuse department store in Reinickendorf."
+        },
+        {
+          "id": "recyclinghof",
+          "name": "BSR-Recyclinghof / Schadstoffmobil",
+          "colorName": "Orange (BSR livery)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "ewaste",
+            "hazardous"
+          ],
+          "description": "The 15 BSR recycling yards and the mobile Schadstoffmobil take electrical appliances and household chemicals free of charge for Berlin residents."
+        }
+      ],
+      "categories": {
+        "plastic": {
+          "categoryId": "plastic",
+          "binId": "gelbe-tonne",
+          "binName": "Gelbe Tonne / Gelber Sack",
+          "colorName": "Gelb (yellow)",
+          "colorHex": "#facc15",
+          "textColorHex": "#111827",
+          "recyclable": true,
+          "disposal": "Return any deposit bottle at a shop first; all other plastic packaging goes in the Gelbe Tonne.",
+          "prepSteps": [
+            "Check for the Pfand symbol — single-use PET bottles are worth 25 cents at any shop machine",
+            "Empty the packaging until it is löffelrein (spoon-clean); do not rinse, since washing wastes more water than it saves",
+            "Separate the parts: pull the aluminium lid off the yoghurt pot and the film off the tray",
+            "Do not stack or nest packaging inside other packaging — the sorting plant reads only the outside"
+          ],
+          "acceptedExamples": [
+            "Non-deposit plastic bottles for shampoo, detergent and cooking oil",
+            "Joghurtbecher and Margarinebecher",
+            "Plastic film, carrier bags and bread bags",
+            "Blister packaging and fruit punnets",
+            "Styropor packaging from electronics",
+            "Plastic tubes such as toothpaste"
+          ],
+          "rejectedExamples": [
+            "Pfandflaschen (25 cents you throw away — return them at a Pfandautomat)",
+            "Plastic toys, buckets and coat hangers (not packaging — Hausmüll or Recyclinghof)",
+            "Old CDs and DVDs (not packaging — Hausmüll)",
+            "Nappies, which are plastic but not packaging (Hausmüll)",
+            "Packaging still full of food residue (it downgrades the whole sorting batch)"
+          ],
+          "notes": "The legal test is Verpackung, not material: if the item held a product sold in a shop it belongs in the yellow bin, otherwise it does not. Some Berlin districts have a Wertstofftonne that also accepts stoffgleiche Nichtverpackungen such as plastic washing-up bowls — check the sticker on your bin.",
+          "dropOff": "Deposit bottles: any Pfandautomat in a supermarket. Non-packaging plastics and bulky items: BSR-Recyclinghof."
+        },
+        "paper": {
+          "categoryId": "paper",
+          "binId": "blaue-tonne",
+          "binName": "Blaue Tonne (Papiertonne)",
+          "colorName": "Blau (blue)",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put clean, dry paper in the Blaue Tonne.",
+          "prepSteps": [
+            "Keep it dry; wet paper is worthless to the mill",
+            "Remove plastic windows only from padded envelopes — normal window envelopes are fine",
+            "Take out plastic document sleeves and ring binders",
+            "Do not use the blue bin for the cardboard box of a pizza with grease on it"
+          ],
+          "acceptedExamples": [
+            "Zeitungen und Zeitschriften",
+            "Briefumschläge, also with windows",
+            "Schreib- und Druckerpapier",
+            "Werbeprospekte und Kataloge",
+            "Papiertüten",
+            "Schulhefte without plastic covers"
+          ],
+          "rejectedExamples": [
+            "Kassenbons on thermal paper (the coating contaminates the recycled pulp)",
+            "Backpapier and Butterbrotpapier (silicone or wax coated — Hausmüll)",
+            "Taschentücher und Küchenrolle (hygiene paper, fibres too short — Hausmüll or Biogut)",
+            "Tapete (wallpaper adhesive and vinyl layers — Hausmüll)",
+            "Fotos und laminierte Blätter (plastic layers cannot be pulped)"
+          ],
+          "notes": "Germany recovers close to 80 percent of its paper, and the Blaue Tonne is the cleanest stream in the system — which is exactly why grease and food residue are taken so seriously. In many Berlin buildings the paper bin belongs to a private contractor rather than to BSR.",
+          "dropOff": "Large amounts, or a building with no Papiertonne: BSR-Recyclinghof paper container, free for households."
+        },
+        "cardboard": {
+          "categoryId": "cardboard",
+          "binId": "blaue-tonne",
+          "binName": "Blaue Tonne (Papiertonne)",
+          "colorName": "Blau (blue)",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Flatten the box and put it in the Blaue Tonne.",
+          "prepSteps": [
+            "Remove Klebeband, plastic film windows and Styropor inserts",
+            "Fold and flatten every carton so the bin is not full after two parcels",
+            "Cut very large boxes down; anything that does not fit goes to the Recyclinghof",
+            "Tear off greasy pizza-box sections and put them in the Hausmüll"
+          ],
+          "acceptedExamples": [
+            "Versandkartons from parcels",
+            "Müsli-, Schuh- und Waschmittelkartons",
+            "Eierkartons aus Pappe",
+            "Klopapierrollen",
+            "Papptrays and Kartonhülsen",
+            "Clean Pizzakarton lids"
+          ],
+          "rejectedExamples": [
+            "Getränkekartons und Tetra Pak (Verbundverpackung — these belong in the Gelbe Tonne, not the blue one)",
+            "Beschichtete Kartons for frozen food (plastic coating blocks re-pulping)",
+            "Fettige Pizzakartons (grease ruins the fibre)",
+            "Kartons voller Styropor (the sorting plant rejects contaminated loads)"
+          ],
+          "notes": "Drink cartons are the trap here: they look like cardboard but are a composite of board, polyethylene and aluminium, so German rules put them in the Gelbe Tonne with the rest of the Verbundverpackungen.",
+          "dropOff": "Move-in and move-out quantities of cardboard: BSR-Recyclinghof, free for household amounts."
+        },
+        "glass": {
+          "categoryId": "glass",
+          "binId": "glascontainer",
+          "binName": "Altglascontainer",
+          "colorName": "Weiß / Grün / Braun (colour-separated igloos)",
+          "colorHex": "#047857",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Return deposit bottles at a shop, then sort the rest by colour into the Weißglas, Grünglas or Braunglas container.",
+          "prepSteps": [
+            "Check for Pfand first — Mehrweg beer and mineral-water bottles are worth 8 to 15 cents",
+            "Empty the jar; a quick wipe is enough, no rinsing needed",
+            "Take metal and plastic lids off and put them in the Gelbe Tonne",
+            "Blue, red and other colours go into the Grünglas container, which tolerates mixed colour",
+            "Respect the Ruhezeiten: no glass disposal between 20:00 and 07:00, nor on Sundays and public holidays"
+          ],
+          "acceptedExamples": [
+            "Weinflaschen und Sektflaschen",
+            "Marmeladen- und Gurkengläser",
+            "Saucen- und Ölflaschen",
+            "Parfümflakons",
+            "Babynahrungsgläser",
+            "Einweg-Glasflaschen without a Pfand mark"
+          ],
+          "rejectedExamples": [
+            "Trinkgläser, Vasen und Fensterglas (different melting point — they cause faults in new bottles)",
+            "Porzellan und Keramik (they never melt and stay as stones in the batch)",
+            "Glühbirnen und Energiesparlampen (metal fittings, and mercury in energy-saving lamps)",
+            "Spiegel und Autoglas (coatings and laminate film — Recyclinghof)",
+            "Pfandflaschen (money back at the shop instead)"
+          ],
+          "notes": "Colour separation genuinely matters: a single green bottle in the Weißglas container tints an entire melt, and white glass is the only colour that cannot be made from mixed cullet. Germany recycles more than 80 percent of its container glass on this basis.",
+          "dropOff": "Flachglas, Spiegel and Autoglas: BSR-Recyclinghof. Pfand bottles: any shop selling that drink type."
+        },
+        "metal": {
+          "categoryId": "metal",
+          "binId": "gelbe-tonne",
+          "binName": "Gelbe Tonne / Gelber Sack",
+          "colorName": "Gelb (yellow)",
+          "colorHex": "#facc15",
+          "textColorHex": "#111827",
+          "recyclable": true,
+          "disposal": "Return deposit cans at a shop machine; all other metal packaging goes in the Gelbe Tonne alongside the plastic.",
+          "prepSteps": [
+            "Check the can for the Einwegpfand logo — drinks cans carry a 25-cent deposit",
+            "Empty tins löffelrein; no rinsing required",
+            "Keep the metal lid separate from the glass jar it came from",
+            "Do not flatten cans completely; the sorting plant's magnets and eddy-current separators read whole shapes better"
+          ],
+          "acceptedExamples": [
+            "Konservendosen",
+            "Alufolie und Aluschalen",
+            "Kronkorken und Schraubverschlüsse",
+            "Leere Spraydosen such as deodorant",
+            "Tierfutterdosen",
+            "Metal tubes and caps from packaging"
+          ],
+          "rejectedExamples": [
+            "Pfanddosen (25 cents refundable at the shop)",
+            "Töpfe, Pfannen und Besteck (not packaging — Recyclinghof scrap metal)",
+            "Werkzeug und Metallteile (Altmetall at the Recyclinghof)",
+            "Farbdosen mit Restinhalt (hazardous residue — Schadstoffmobil)",
+            "Gaskartuschen (explosion risk — Schadstoffsammlung)"
+          ],
+          "notes": "This is the point where German practice differs most from Anglo-American schemes: metal and plastic share one bin because the law sorts by packaging function, and the modern sorting plants split the materials again with magnets, eddy currents and near-infrared scanners.",
+          "dropOff": "Altmetall, pans and tools: BSR-Recyclinghof scrap container, free for household quantities."
+        },
+        "organic": {
+          "categoryId": "organic",
+          "binId": "biogut",
+          "binName": "Braune Tonne (Biogut)",
+          "colorName": "Braun (brown)",
+          "colorHex": "#78350f",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put food and garden waste loose, or wrapped in newspaper, in the Braune Tonne.",
+          "prepSteps": [
+            "Wrap wet waste in newspaper or a paper bag to keep the bin clean",
+            "Never use plastic bags, and not even certified kompostierbare Biobeutel — BSR rejects both",
+            "Layer a little kitchen paper at the bottom in summer to reduce smell and maggots",
+            "Keep the lid shut; crush and cut large garden waste to fit"
+          ],
+          "acceptedExamples": [
+            "Obst- und Gemüsereste",
+            "Speisereste, gekocht und roh, including meat and fish",
+            "Kaffeesatz mit Filtertüte und Teebeutel",
+            "Eierschalen",
+            "Verwelkte Blumen und Zimmerpflanzen",
+            "Rasenschnitt, Laub und Strauchschnitt"
+          ],
+          "rejectedExamples": [
+            "Plastiktüten und Biobeutel (they survive the digester and speck the compost with plastic)",
+            "Katzenstreu und Tierkot (hygiene and heavy-metal limits for the compost)",
+            "Asche aus dem Kamin (heavy metals — Hausmüll)",
+            "Windeln (plastic and hygiene waste — Hausmüll)",
+            "Verpackte Lebensmittel (packaging must be removed first)"
+          ],
+          "notes": "Berlin's Biogut goes to the Ruhleben biogas plant, whose gas runs about 150 BSR refuse trucks — the reason cooked food and meat are explicitly welcome. Households that separate well can apply for a cheaper, smaller Hausmülltonne, so the brown bin lowers the bill.",
+          "dropOff": "Large amounts of garden waste: BSR-Recyclinghof Grünschnitt container, and seasonal Christmas-tree collection in January."
+        },
+        "ewaste": {
+          "categoryId": "ewaste",
+          "binId": "recyclinghof",
+          "binName": "BSR-Recyclinghof / Schadstoffmobil",
+          "colorName": "Orange (BSR livery)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Take Elektrogeräte to a BSR-Recyclinghof, an Orange Box or a shop take-back counter — never to the Hausmüll.",
+          "prepSteps": [
+            "Delete your data and sign out of accounts first",
+            "Take out removable batteries and hand them in separately",
+            "Small devices under 20 cm fit in a BSR Orange Box in shopping centres and BSR yards",
+            "Bring proof of Berlin residence for larger quantities at the Recyclinghof"
+          ],
+          "acceptedExamples": [
+            "Handys, Laptops und Tablets",
+            "Wasserkocher, Toaster und Mixer",
+            "Kabel, Ladegeräte und Mehrfachsteckdosen",
+            "Fernseher und Monitore",
+            "Elektrowerkzeug und Akkugeräte",
+            "Leuchtmittel with electronics, such as LED lamps"
+          ],
+          "rejectedExamples": [
+            "Elektrogeräte im Hausmüll (illegal under the ElektroG, and the batteries start fires)",
+            "E-Zigaretten und Vapes in any household bin (lithium cells — shop take-back is mandatory)",
+            "Kühlschränke left at the kerb (refrigerant must be extracted by a licensed operator)",
+            "Geräte mit aufgeblähtem Akku handed over unannounced (tell the staff — it is a fire risk)"
+          ],
+          "notes": "Since the ElektroG update, any shop with more than 400 m² of electronics floor space, supermarkets included, must take back small appliances up to 25 cm free and without a purchase. BSR's Orange Boxes make this even easier for phones, cables and chargers.",
+          "dropOff": "15 BSR-Recyclinghöfe, Orange Boxes across the city, retailer take-back, and BSR NochMall for devices that still work."
+        },
+        "hazardous": {
+          "categoryId": "hazardous",
+          "binId": "recyclinghof",
+          "binName": "BSR-Recyclinghof / Schadstoffmobil",
+          "colorName": "Orange (BSR livery)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Take Schadstoffe to a BSR-Recyclinghof or the Schadstoffmobil, free of charge for Berlin households.",
+          "prepSteps": [
+            "Leave everything in its original, labelled container",
+            "Never mix chemicals, and never decant them into drinks bottles",
+            "Tape the poles of lithium and button cells before transport",
+            "Check the Schadstoffmobil timetable — it stops in every district on a rota"
+          ],
+          "acceptedExamples": [
+            "Farben, Lacke und Lösungsmittel",
+            "Altöl, Bremsflüssigkeit und Frostschutzmittel",
+            "Pflanzenschutzmittel und Chemikalien",
+            "Batterien und Akkus",
+            "Leuchtstoffröhren und Energiesparlampen",
+            "Abgelaufene Medikamente and thermometers containing mercury"
+          ],
+          "rejectedExamples": [
+            "Batterien im Hausmüll (illegal under the BattG and a frequent cause of truck fires)",
+            "Farbe im Abfluss (it contaminates the Berlin waterways)",
+            "Medikamente in der Toilette (residues pass through the sewage works into the Spree)",
+            "Spraydosen mit Restdruck in der Gelben Tonne (only genuinely empty aerosols belong there)",
+            "Altöl in der Restmülltonne (one litre can pollute a million litres of water)"
+          ],
+          "notes": "Batteries can also be handed in at any shop that sells them, which is a legal duty in Germany, and completely dried-out paint tins may go in the Hausmüll — the container only counts as hazardous while it still holds liquid product.",
+          "dropOff": "BSR-Recyclinghof hazardous counter, the Schadstoffmobil rota, supermarket battery boxes, and pharmacies for medicines."
+        },
+        "textile": {
+          "categoryId": "textile",
+          "binId": "altkleidercontainer",
+          "binName": "Altkleidercontainer",
+          "colorName": "Pink/weiß (charity branding)",
+          "colorHex": "#db2777",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Bag clean, dry clothing and put it in an Altkleidercontainer or donate it at BSR NochMall.",
+          "prepSteps": [
+            "Wash and dry everything before donating",
+            "Bag it so it stays dry inside the container",
+            "Tie shoes together in pairs",
+            "Use a container from a recognised charity such as DRK, Humana or BSR"
+          ],
+          "acceptedExamples": [
+            "Kleidung aller Art, clean and dry",
+            "Schuhe paarweise gebunden",
+            "Bettwäsche, Handtücher und Gardinen",
+            "Taschen, Gürtel und Mützen",
+            "Stoffreste und Meterware",
+            "Saubere Plüschtiere"
+          ],
+          "rejectedExamples": [
+            "Nasse oder verschimmelte Textilien (they spoil the whole bag)",
+            "Ölverschmierte Lappen (self-ignition risk — Schadstoffsammlung)",
+            "Teppiche und Matratzen (bulky waste — Recyclinghof or Sperrmüll)",
+            "Einzelne Schuhe (unsellable without their pair)",
+            "Textilien in der Gelben Tonne (fabric wraps around the sorting machinery)"
+          ],
+          "notes": "Since January 2025 EU rules require separate textile collection across Germany, so containers are increasingly common, but the quality of what people put in has fallen sharply — only clean, dry, wearable or cleanly reusable fabric keeps the system viable.",
+          "dropOff": "Altkleidercontainer, Sozialkaufhäuser, BSR NochMall in Reinickendorf, and textile bays at the Recyclinghöfe."
+        },
+        "trash": {
+          "categoryId": "trash",
+          "binId": "hausmuell",
+          "binName": "Hausmülltonne",
+          "colorName": "Grau/Schwarz (grey or black)",
+          "colorHex": "#3f3f46",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Bag it and put it in the grey Hausmülltonne.",
+          "prepSteps": [
+            "Bag the waste so the bin stays usable for the whole building",
+            "Wrap broken glass and sharp objects in paper",
+            "Keep the lid closed — an overfilled bin can be left unemptied",
+            "Take a moment first: every correctly separated item lowers the building's waste bill"
+          ],
+          "acceptedExamples": [
+            "Windeln und Hygieneartikel",
+            "Staubsaugerbeutel und Kehricht",
+            "Zerbrochenes Porzellan und Trinkgläser",
+            "Kassenbons und Backpapier",
+            "Zigarettenkippen und kalte Asche",
+            "Katzenstreu und Tierkot"
+          ],
+          "rejectedExamples": [
+            "Batterien und Elektrogeräte (illegal, and a fire risk in the truck)",
+            "Verpackungen (they belong in the Gelbe Tonne, Blaue Tonne or Glascontainer at no extra cost)",
+            "Bioabfall (it is what makes the residual bin heavy, smelly and expensive)",
+            "Flüssige Farben und Chemikalien (Schadstoffmobil)",
+            "Heiße Asche (it has set fire to many Berlin bins)"
+          ],
+          "notes": "Berlin charges by residual bin volume, so the Hausmülltonne is the only bin that directly costs your building money — separating packaging, paper and Biogut is free by comparison. Everything in it is burned for district heating at Ruhleben.",
+          "dropOff": "Sperrmüll (furniture, mattresses): free BSR collection by appointment, or self-delivery to a Recyclinghof."
+        }
+      }
+    },
+    {
+      "id": "jp-tokyo",
+      "name": "Tokyo — 23 special wards",
+      "country": "Japan",
+      "authority": "Ward cleaning office (区清掃事務所) with the Clean Association of TOKYO 23 (東京二十三区清掃一部事務組合)",
+      "updated": "2026-02-18",
+      "notes": "Tokyo sorts by what the incinerator can handle rather than by material family, so the first question is always burnable or not burnable — and because the wards run high-temperature plants, most soiled or mixed plastic is simply burned for energy. Clean containers and packaging are pulled out as shigen (資源) and collected on their own day, and anything over 30 cm becomes sodai gomi, which needs a booking and a paid sticker. The mistakes that get a bag rejected with a red sticker are using an opaque bag and putting it out the night before, because crows tear it open before the 8am collection.",
+      "bins": [
+        {
+          "id": "moyaseru",
+          "name": "Burnable waste (燃やすごみ / moyaseru gomi)",
+          "colorName": "Clear bag, red or orange ward label",
+          "colorHex": "#dc2626",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "organic",
+            "trash"
+          ],
+          "description": "Collected twice a week in a transparent or semi-transparent bag and burned for electricity at the ward incineration plant."
+        },
+        {
+          "id": "moyasenai",
+          "name": "Non-burnable waste (燃やさないごみ / moyasenai gomi)",
+          "colorName": "Clear bag, blue ward label",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "metal"
+          ],
+          "description": "Collected once or twice a month: metal objects, ceramics, non-container glass and small appliances that are not collected as a resource."
+        },
+        {
+          "id": "shigen",
+          "name": "Recyclable resources (資源 / shigen)",
+          "colorName": "Clear bag or container, green label",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "paper",
+            "cardboard",
+            "glass"
+          ],
+          "description": "Weekly resource day for paper tied in bundles, cardboard, glass bottles and cans, put out at the designated collection point."
+        },
+        {
+          "id": "pet-plastic",
+          "name": "PET bottles & plastic resources (PETボトル・プラスチック資源)",
+          "colorName": "PET cage / plastic-resource bag, clear with blue-white PET mark",
+          "colorHex": "#0ea5e9",
+          "textColorHex": "#111827",
+          "accepts": [
+            "plastic"
+          ],
+          "description": "PET bottles go in their own net cage or bag; clean plastic containers and packaging marked プラ are collected separately in the growing number of wards that run plastic-resource collection."
+        },
+        {
+          "id": "yugai",
+          "name": "Hazardous waste (有害ごみ / yugai gomi)",
+          "colorName": "Separate clear bag, yellow warning label",
+          "colorHex": "#facc15",
+          "textColorHex": "#111827",
+          "accepts": [
+            "hazardous"
+          ],
+          "description": "Batteries, fluorescent tubes, lighters and thermometers, bagged separately and put out on non-burnable day or taken to a ward collection box."
+        },
+        {
+          "id": "kyoten",
+          "name": "Drop-off collection & oversized waste (拠点回収・粗大ごみ)",
+          "colorName": "Purple (ward facility signage)",
+          "colorHex": "#6d28d9",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "ewaste",
+            "textile"
+          ],
+          "description": "Small-appliance recycling boxes and used-clothing collection at ward offices, community centres and stations; oversized items over 30 cm are booked through the sodai gomi centre and need a paid sticker."
+        }
+      ],
+      "categories": {
+        "plastic": {
+          "categoryId": "plastic",
+          "binId": "pet-plastic",
+          "binName": "PET bottles & plastic resources (PETボトル・プラスチック資源)",
+          "colorName": "PET cage / plastic-resource bag, clear with blue-white PET mark",
+          "colorHex": "#0ea5e9",
+          "textColorHex": "#111827",
+          "recyclable": true,
+          "disposal": "Rinse and crush PET bottles into the PET cage; put other clean プラ packaging out on plastic-resource day, and burn anything soiled.",
+          "prepSteps": [
+            "Take off the cap and peel off the label — both are plastic packaging, not PET",
+            "Rinse the bottle and crush it flat so more fits in the cage",
+            "Put PET bottles only in the PET cage or PET bag; never mix other plastics in",
+            "If the packaging is greasy and will not rinse clean, put it in the burnable bag instead"
+          ],
+          "acceptedExamples": [
+            "PET drink bottles with the PET mark",
+            "Caps and labels, as plastic packaging",
+            "Bento trays and instant-noodle cups, rinsed",
+            "Shampoo and detergent bottles",
+            "Egg cartons and food-wrap film marked プラ",
+            "Plastic bags and packaging film, clean"
+          ],
+          "rejectedExamples": [
+            "Oily or sauce-stained containers (they cannot be washed clean, so they are burnable)",
+            "Plastic buckets, toys and storage boxes in wards with packaging-only collection (burnable or non-burnable)",
+            "PET bottles with the cap and label still on (they are a different resin and spoil the flake quality)",
+            "Bottles that held oil, pesticide or chemicals (residue contaminates the recycled resin)",
+            "Anything over 30 cm, such as a plastic shelf (that is sodai gomi and needs a booking)"
+          ],
+          "notes": "Japan's PET bottle collection rate is among the highest in the world, which is why the cap-and-label step is taken so seriously. Under the 2022 Plastic Resource Circulation Act a growing number of the 23 wards now collect plastic products as well as packaging — check your ward's leaflet, because in the rest, non-PET plastic still goes in the burnable bag.",
+          "dropOff": "Supermarket and convenience-store front-of-shop PET and tray collection boxes, open outside collection days."
+        },
+        "paper": {
+          "categoryId": "paper",
+          "binId": "shigen",
+          "binName": "Recyclable resources (資源 / shigen)",
+          "colorName": "Clear bag or container, green label",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Bundle paper by type, tie it with string and put it out on resource day.",
+          "prepSteps": [
+            "Sort into newspapers, magazines and miscellaneous paper (雑がみ)",
+            "Tie each bundle crosswise with paper string, not plastic tape",
+            "Put small scraps of zatsugami inside a paper bag so they do not scatter",
+            "Do not put paper out on a rainy morning — wet paper is rejected"
+          ],
+          "acceptedExamples": [
+            "Newspapers and the inserted flyers",
+            "Magazines and paperback books",
+            "Office paper and school handouts",
+            "Envelopes and postcards",
+            "Paper bags",
+            "Zatsugami: wrapping paper, paper boxes and cores"
+          ],
+          "rejectedExamples": [
+            "Receipts on thermal paper (the coating cannot be re-pulped — burnable)",
+            "Tissues, paper towels and used napkins (burnable)",
+            "Photographs and laminated sheets (plastic layers)",
+            "Waxed or oil-resistant paper such as baking paper (burnable)",
+            "Paper cups with a plastic lining (burnable in most wards)"
+          ],
+          "notes": "Zatsugami — the category for miscellaneous everyday paper — is what Tokyo wards push hardest, since a surprising share of the burnable bag is still recyclable paper. Milk cartons are a separate route: rinse, cut open, dry and take them to a supermarket collection box.",
+          "dropOff": "Supermarket collection boxes for paper drink cartons and, in many wards, for magazines; community group collections (集団回収) also take bundled paper."
+        },
+        "cardboard": {
+          "categoryId": "cardboard",
+          "binId": "shigen",
+          "binName": "Recyclable resources (資源 / shigen)",
+          "colorName": "Clear bag or container, green label",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Flatten cardboard, tie it in a bundle with string and put it out on resource day.",
+          "prepSteps": [
+            "Peel off all packing tape and delivery labels",
+            "Flatten and stack boxes the same way up",
+            "Tie the bundle crosswise with string so it does not blow apart",
+            "Keep it separate from newspapers and magazines — they are bundled separately"
+          ],
+          "acceptedExamples": [
+            "Delivery and takuhaibin boxes",
+            "Beer and mineral-water carry cases",
+            "Cardboard boxes for appliances",
+            "Paperboard cartons for sweets and cereal",
+            "Clean pizza box lids",
+            "Corrugated sheet packing"
+          ],
+          "rejectedExamples": [
+            "Oily or sauce-soaked boxes (burnable)",
+            "Boxes with polystyrene or plastic cushioning still inside (sort them first)",
+            "Wax-coated fruit and fish boxes (burnable, the coating blocks re-pulping)",
+            "Cardboard left loose without string (collection points require tied bundles)"
+          ],
+          "notes": "In Tokyo the bundling is the rule that decides whether your cardboard is collected at all: untied boxes are treated as illegal dumping at the shared collection point and left behind with a warning sticker.",
+          "dropOff": "Supermarket and home-centre cardboard collection bays, and community group collections (集団回収), which often pay the neighbourhood association per kilo."
+        },
+        "glass": {
+          "categoryId": "glass",
+          "binId": "shigen",
+          "binName": "Recyclable resources (資源 / shigen)",
+          "colorName": "Clear bag or container, green label",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse bottles, take off the caps and put them in the bottle container on resource day.",
+          "prepSteps": [
+            "Rinse the bottle with water and leave the label on",
+            "Remove metal and plastic caps — caps go with cans or plastic packaging",
+            "Place bottles in the crate or bag gently, unbroken",
+            "Take beer and sake bottles with a deposit back to the shop instead"
+          ],
+          "acceptedExamples": [
+            "Drink bottles for juice, sake and beer",
+            "Seasoning bottles for soy sauce and mirin",
+            "Jam and pickle jars",
+            "Cosmetic and perfume bottles",
+            "Instant-coffee jars",
+            "One-way wine and spirit bottles"
+          ],
+          "rejectedExamples": [
+            "Drinking glasses, vases and Pyrex (different composition — non-burnable)",
+            "Ceramics and porcelain (non-burnable)",
+            "Broken glass in the resource crate (injury risk — wrap it and put it in non-burnable, marked キケン)",
+            "Light bulbs and fluorescent tubes (fluorescent tubes contain mercury — hazardous waste)",
+            "Mirrors and window glass (non-burnable)"
+          ],
+          "notes": "Reusable beer and sake bottles still carry a deposit at liquor shops, and returning them beats recycling because the bottle is washed and refilled. Broken glass is never a resource: wrap it in thick paper and write キケン (danger) on the bag.",
+          "dropOff": "Liquor shops for deposit-bearing beer and sake bottles; supermarket bottle collection boxes in some wards."
+        },
+        "metal": {
+          "categoryId": "metal",
+          "binId": "moyasenai",
+          "binName": "Non-burnable waste (燃やさないごみ / moyasenai gomi)",
+          "colorName": "Clear bag, blue ward label",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put metal objects in a clear bag on non-burnable day — but rinse drink and food cans and put those out as shigen instead.",
+          "prepSteps": [
+            "Rinse cans and cut nothing: leave the can whole so it can be identified",
+            "Put clean drink and food cans in the can container on resource day, not in the non-burnable bag",
+            "Use up aerosol cans completely; most wards now tell you not to puncture them, and to put them out separately",
+            "Wrap knives and sharp metal in thick paper and write キケン on the outside"
+          ],
+          "acceptedExamples": [
+            "Pots, pans and kettles",
+            "Cutlery, scissors and tools",
+            "Metal hangers and small metal fittings",
+            "Aluminium foil and foil trays",
+            "Empty spray cans and cassette gas canisters, put out separately",
+            "Small metal appliances without a battery"
+          ],
+          "rejectedExamples": [
+            "Rinsed drink and food cans (they are shigen and have their own container)",
+            "Spray cans with contents left inside (they explode in the truck and at the plant)",
+            "Metal items over 30 cm, such as a bicycle (sodai gomi, booking required)",
+            "Batteries mixed into the metal bag (hazardous waste, separate bag)",
+            "Fridges, washing machines and air conditioners (Home Appliance Recycling Law — the retailer takes them for a fee)"
+          ],
+          "notes": "Aluminium and steel cans are among the most valuable resources a ward collects, so the rinsed-can route matters; everything else metallic falls into non-burnable, which is only collected once or twice a month. Cassette gas canisters have caused several collection-truck fires in Tokyo, which is why the wards ask for them to be put out separately and fully empty.",
+          "dropOff": "Scrap dealers for larger metal items; home appliance retailers for the four items covered by the Home Appliance Recycling Law."
+        },
+        "organic": {
+          "categoryId": "organic",
+          "binId": "moyaseru",
+          "binName": "Burnable waste (燃やすごみ / moyaseru gomi)",
+          "colorName": "Clear bag, red or orange ward label",
+          "colorHex": "#dc2626",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Drain the water out of kitchen waste and put it in the burnable bag.",
+          "prepSteps": [
+            "Drain kitchen waste well (水切り) — water is most of the weight and lowers incinerator efficiency",
+            "Wrap wet scraps in newspaper to control smell and flies",
+            "Tie the bag and put it out by 8am on collection morning, never the night before",
+            "Put the bag under the crow net at the collection point"
+          ],
+          "acceptedExamples": [
+            "Vegetable peelings and fruit cores",
+            "Leftover cooked food, meat and fish",
+            "Rice, noodles and bread",
+            "Tea leaves and coffee grounds",
+            "Eggshells and shellfish shells",
+            "Small garden prunings and fallen leaves, bundled"
+          ],
+          "rejectedExamples": [
+            "Waste water and soup poured into the bag (it leaks and attracts crows)",
+            "Large branches over 30 cm or 50 cm depending on the ward (sodai gomi)",
+            "Soil and sand (not household waste — a garden centre or contractor takes it)",
+            "Cooking oil poured in liquid (solidify it with a coagulant or soak it into paper first)",
+            "Food still in its plastic packaging (separate them)"
+          ],
+          "notes": "Tokyo has almost no kerbside composting: food waste is burned in high-efficiency plants that generate electricity for the ward, so the useful contribution you can make is draining the water. Some wards subsidise home composters or electric food-waste dryers.",
+          "dropOff": "Ward composter subsidy schemes, and community garden compost projects in several wards."
+        },
+        "ewaste": {
+          "categoryId": "ewaste",
+          "binId": "kyoten",
+          "binName": "Drop-off collection & oversized waste (拠点回収・粗大ごみ)",
+          "colorName": "Purple (ward facility signage)",
+          "colorHex": "#6d28d9",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put small appliances in a ward small-appliance recycling box; book sodai gomi for large ones and hand the four legally covered appliances back to a retailer.",
+          "prepSteps": [
+            "Delete your data and take out the SIM and memory cards",
+            "Remove batteries and put them out as hazardous waste",
+            "Check the box slot size — most ward boxes take items up to about 15 by 30 cm",
+            "For a TV, fridge, washing machine or air conditioner, buy a recycling ticket at the post office or ask the retailer"
+          ],
+          "acceptedExamples": [
+            "Mobile phones, digital cameras and game consoles",
+            "Cables, chargers and AC adapters",
+            "Electric shavers, hair dryers and rice cookers",
+            "Keyboards, mice and portable audio players",
+            "Remote controls and calculators",
+            "Laptop computers, which many makers also take back free"
+          ],
+          "rejectedExamples": [
+            "Televisions, fridges, washing machines and air conditioners (covered by the Home Appliance Recycling Law — the ward will not take them)",
+            "Devices with a swollen lithium battery (fire risk — ask the ward office how to hand it over)",
+            "Electric items in the burnable bag (batteries and circuit boards must not be incinerated)",
+            "Appliances over 30 cm left at the collection point (sodai gomi, booking and sticker required)"
+          ],
+          "notes": "The Small Home Appliance Recycling Law put collection boxes in ward offices, libraries and station buildings for exactly this stream, so a phone or charger never needs to become waste. Anything over 30 cm is sodai gomi: book online or by phone, buy the paid sticker at a convenience store, write your name on it and put the item out on the appointed morning.",
+          "dropOff": "Small-appliance boxes at ward offices and community centres, retailer take-back counters, and the sodai gomi booking centre for large items."
+        },
+        "hazardous": {
+          "categoryId": "hazardous",
+          "binId": "yugai",
+          "binName": "Hazardous waste (有害ごみ / yugai gomi)",
+          "colorName": "Separate clear bag, yellow warning label",
+          "colorHex": "#facc15",
+          "textColorHex": "#111827",
+          "recyclable": false,
+          "disposal": "Bag batteries, tubes and lighters separately and put them out on non-burnable day, or use a ward or shop collection box.",
+          "prepSteps": [
+            "Keep hazardous items in their own transparent bag, never mixed with other waste",
+            "Tape the terminals of lithium and button batteries",
+            "Use lighters up completely and release any remaining gas outdoors, away from flame",
+            "Put fluorescent tubes back in their cardboard sleeve so they do not break"
+          ],
+          "acceptedExamples": [
+            "Dry-cell and button batteries",
+            "Fluorescent tubes and energy-saving bulbs",
+            "Mercury thermometers",
+            "Disposable lighters",
+            "Small rechargeable battery packs, where the ward collects them",
+            "Broken compact fluorescent lamps, wrapped"
+          ],
+          "rejectedExamples": [
+            "Lithium-ion batteries in the burnable or non-burnable bag (they are the main cause of collection-truck and plant fires in Tokyo)",
+            "Paint, solvents and chemicals (wards do not collect them — a specialist contractor must)",
+            "Kerosene and petrol (a petrol station or fuel dealer takes them)",
+            "Medicines in the bin (return them to a pharmacy)",
+            "Full lighters and spray cans (residual gas ignites in the truck)"
+          ],
+          "notes": "Rechargeable batteries and battery-containing gadgets are handled by the JBRC take-back boxes in electronics shops rather than the ward, and Tokyo has run public campaigns about it after repeated fires at the incineration plants. Wards do not accept paint, oil or garden chemicals at all.",
+          "dropOff": "JBRC rechargeable-battery boxes in electronics and home-centre shops, ward office battery boxes, pharmacies for medicines, and licensed contractors for paint and chemicals."
+        },
+        "textile": {
+          "categoryId": "textile",
+          "binId": "kyoten",
+          "binName": "Drop-off collection & oversized waste (拠点回収・粗大ごみ)",
+          "colorName": "Purple (ward facility signage)",
+          "colorHex": "#6d28d9",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Take clean, dry clothing to a ward used-clothing collection point; if there is none, wearable clothes go to a recycle shop and the rest in the burnable bag.",
+          "prepSteps": [
+            "Wash and dry everything, and bag it against rain",
+            "Check your ward's furugi collection day and location — most run monthly at ward offices",
+            "Tie shoes in pairs; many collections take shoes and bags as well as clothes",
+            "Cut up anything unusable into rags for the burnable bag"
+          ],
+          "acceptedExamples": [
+            "Clothing that is clean and dry",
+            "Bed sheets, towels and curtains",
+            "Bags, belts and hats",
+            "Paired shoes in wearable condition",
+            "Uniforms and suits",
+            "Knitwear and jeans"
+          ],
+          "rejectedExamples": [
+            "Wet, mouldy or strongly perfumed clothing (it spoils the collected bale)",
+            "Underwear and socks at most collection points (they are not resold)",
+            "Futons, duvets and carpets (sodai gomi, booking required)",
+            "Cloth soaked in oil (fire risk)",
+            "Clothing put out on resource day when the ward has no textile route (it is treated as contamination)"
+          ],
+          "notes": "Textile collection in the 23 wards is drop-off rather than kerbside, and each ward publishes its own furugi (古着) collection calendar; where a ward has no route, clothing is officially burnable waste. Second-hand shops and clothing chains with in-store bins are often the easier option.",
+          "dropOff": "Ward used-clothing collection days, second-hand shops, and in-store take-back boxes at clothing retailers."
+        },
+        "trash": {
+          "categoryId": "trash",
+          "binId": "moyaseru",
+          "binName": "Burnable waste (燃やすごみ / moyaseru gomi)",
+          "colorName": "Clear bag, red or orange ward label",
+          "colorHex": "#dc2626",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Put it in a transparent bag as burnable waste and take it to the collection point by 8am.",
+          "prepSteps": [
+            "Use a transparent or semi-transparent bag so the crew can see the contents",
+            "Put the bag out on the morning of collection, never the night before",
+            "Place it under the crow net or in the box at the collection point",
+            "Wrap anything sharp in thick paper and label it キケン"
+          ],
+          "acceptedExamples": [
+            "Snack bags, wrappers and soiled plastic packaging",
+            "Nappies, with the contents flushed away first",
+            "Tissues, kitchen paper and cotton buds",
+            "Rubber and leather goods",
+            "Small wood offcuts and bamboo skewers under 30 cm",
+            "Vacuum-cleaner dust and sweepings"
+          ],
+          "rejectedExamples": [
+            "Batteries and battery-powered gadgets (they start fires in the truck and in the plant)",
+            "Spray cans and lighters with contents left (explosion risk)",
+            "Items over 30 cm (sodai gomi, booking and a paid sticker)",
+            "Opaque black bags (wards reject anything they cannot see into)",
+            "Waste from a business at a household collection point (businesses must pay a licensed collector)"
+          ],
+          "notes": "The 23 wards burn burnable waste in some of the most advanced incinerators in the world and recover electricity and heat, so a soiled plastic wrapper genuinely belongs here rather than in the resource stream — the sorting rule is cleanliness, not material.",
+          "dropOff": "Sodai gomi centre for anything over 30 cm, booked online or by phone with a sticker bought at a convenience store."
+        }
+      }
+    },
+    {
+      "id": "in-bengaluru",
+      "name": "Bengaluru — BBMP three-bin segregation",
+      "country": "India",
+      "authority": "Bengaluru Solid Waste Management Limited (BSWML), the city corporation's solid waste utility, under the Solid Waste Management Rules 2016",
+      "updated": "2026-02-10",
+      "notes": "Bengaluru runs a mandatory three-way split at the doorstep: green for wet waste collected daily, blue or white for dry waste collected on fixed days, and red for sanitary and domestic hazardous waste. Alongside the municipal system sits the informal economy — the kabadiwala who buys paper, metal and hard plastic by the kilo, and the ward Dry Waste Collection Centre that takes what he will not. The commonest mistake is handing over mixed waste to the auto-tipper because the wet and dry bags were combined in the kitchen, which is precisely what the segregation rules and the pourakarmikas' bell-ringing collection round exist to prevent.",
+      "bins": [
+        {
+          "id": "green-wet",
+          "name": "Green bin — wet waste (hasi kasa)",
+          "colorName": "Green",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "organic"
+          ],
+          "description": "Kitchen and garden waste handed over daily to the auto-tipper, composted or sent to a biomethanisation plant."
+        },
+        {
+          "id": "blue-dry",
+          "name": "Blue or white bin — dry waste (ona kasa)",
+          "colorName": "Blue or white",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "plastic",
+            "paper",
+            "cardboard",
+            "glass",
+            "metal",
+            "textile"
+          ],
+          "description": "Clean, dry recyclables collected on designated days or dropped at the ward Dry Waste Collection Centre (DWCC); the valuable fraction is also bought by the local kabadiwala."
+        },
+        {
+          "id": "red-sanitary",
+          "name": "Red bin — sanitary & domestic hazardous waste",
+          "colorName": "Red",
+          "colorHex": "#dc2626",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "hazardous",
+            "trash"
+          ],
+          "description": "Sanitary waste, domestic hazardous items and non-recyclable rejects, wrapped and marked, collected separately from the other two streams."
+        },
+        {
+          "id": "ewaste-centre",
+          "name": "E-waste collection centre / authorised recycler",
+          "colorName": "Violet (facility signage)",
+          "colorHex": "#7c3aed",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "ewaste"
+          ],
+          "description": "KSPCB-authorised e-waste recyclers, ward collection drives and retailer take-back under the E-Waste (Management) Rules; several also collect from your door."
+        }
+      ],
+      "categories": {
+        "plastic": {
+          "categoryId": "plastic",
+          "binId": "blue-dry",
+          "binName": "Blue or white bin — dry waste (ona kasa)",
+          "colorName": "Blue or white",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse, dry and put plastic in the dry waste bag for the dry-waste collection day or the DWCC.",
+          "prepSteps": [
+            "Rinse out food and drink residue and let the item dry fully — wet dry-waste is rejected",
+            "Cut milk and curd sachets open, rinse and flatten them",
+            "Keep hard plastic separate from film if you plan to sell to the kabadiwala; he pays only for the hard fraction",
+            "Do not bag dry waste inside a wet-waste bag"
+          ],
+          "acceptedExamples": [
+            "PET water and cool-drink bottles",
+            "Shampoo, phenyl and detergent bottles",
+            "Milk and curd sachets, rinsed",
+            "Plastic food containers and buckets",
+            "Bottle caps and hard plastic lids",
+            "Chips packets and multilayer wrappers, for the DWCC's MLP stream"
+          ],
+          "rejectedExamples": [
+            "Sachets and containers with food still in them (they spoil the whole dry bag and the DWCC will refuse it)",
+            "Banned single-use carry bags, thermocol and plastic cutlery (prohibited in Karnataka since 2016 — do not buy them)",
+            "Plastic mixed into the green wet bin (it contaminates the compost with shreds)",
+            "Medicine blister strips (they belong with domestic hazardous waste)",
+            "Oil and chemical containers (residue makes them hazardous)"
+          ],
+          "notes": "Bengaluru's DWCCs accept even multilayer packaging such as chips packets for co-processing in cement kilns, which kabadiwalas will not buy — so the two routes are complementary rather than competing. Karnataka's single-use plastic ban means many of these items should never enter the house in the first place.",
+          "dropOff": "Ward Dry Waste Collection Centre, or your local kabadiwala for bottles, buckets and hard plastic sold by weight."
+        },
+        "paper": {
+          "categoryId": "paper",
+          "binId": "blue-dry",
+          "binName": "Blue or white bin — dry waste (ona kasa)",
+          "colorName": "Blue or white",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Keep paper dry and either sell it to the kabadiwala by weight or hand it over as dry waste.",
+          "prepSteps": [
+            "Store newspapers in a dry stack — the raddiwala pays a good rate per kilo for clean newsprint",
+            "Keep paper away from the wet waste bin; even a damp bag ruins the load",
+            "Remove plastic file covers, spiral bindings and lamination",
+            "Bundle and tie paper if you are handing it to the collector"
+          ],
+          "acceptedExamples": [
+            "Newspapers and magazines",
+            "Office and exam paper, notebooks",
+            "Envelopes and letters",
+            "Textbooks and old files",
+            "Paper covers and flyers",
+            "Brown paper bags"
+          ],
+          "rejectedExamples": [
+            "Paper plates and cups used for food (soiled — reject stream)",
+            "Thermal-paper bills from ATMs and shops (the coating cannot be re-pulped)",
+            "Laminated certificates and photographs (plastic layers)",
+            "Used tissues and paper napkins (sanitary or reject waste)",
+            "Oily paper from a snack shop (contaminated)"
+          ],
+          "notes": "Selling raddi to the kabadiwala is still the highest-value route in Bengaluru — newsprint fetches a real price per kilo, which is why so little clean paper reaches the municipal stream at all. This informal sector handles a large share of the city's recycling.",
+          "dropOff": "Local kabadiwala or raddiwala, ward DWCC, and apartment-complex raddi collection drives."
+        },
+        "cardboard": {
+          "categoryId": "cardboard",
+          "binId": "blue-dry",
+          "binName": "Blue or white bin — dry waste (ona kasa)",
+          "colorName": "Blue or white",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Flatten cartons and hand them over as dry waste, or sell them to the kabadiwala.",
+          "prepSteps": [
+            "Remove tape, staples and plastic packing material",
+            "Flatten and stack the boxes so they stay dry",
+            "Keep them off the floor during the monsoon — damp board loses its value",
+            "Tear off any greasy portion before handing it over"
+          ],
+          "acceptedExamples": [
+            "E-commerce delivery cartons",
+            "Appliance and electronics boxes",
+            "Shoe and gift boxes",
+            "Egg trays",
+            "Paperboard cartons for snacks and soap",
+            "Tetra Pak juice and milk cartons, rinsed and flattened"
+          ],
+          "rejectedExamples": [
+            "Oily pizza and biryani boxes (grease cannot be re-pulped — reject waste)",
+            "Wax-coated cartons (the coating blocks recycling)",
+            "Cartons still packed with thermocol (separate it first)",
+            "Damp or mouldy cardboard (worthless after monsoon exposure)"
+          ],
+          "notes": "Tetra Pak cartons are collected separately by several Bengaluru DWCCs and by school and apartment collection drives that feed a dedicated recycler, so rinse and flatten rather than assuming they are plain cardboard.",
+          "dropOff": "Kabadiwala, ward DWCC, and Tetra Pak carton collection drives run by apartment associations and schools."
+        },
+        "glass": {
+          "categoryId": "glass",
+          "binId": "blue-dry",
+          "binName": "Blue or white bin — dry waste (ona kasa)",
+          "colorName": "Blue or white",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse bottles and jars and hand them over as dry waste, or return them to the shop or kabadiwala who buys them.",
+          "prepSteps": [
+            "Rinse and drain; take the metal cap off",
+            "Keep whole bottles intact — they are worth more and are safer for the collector",
+            "Wrap broken glass in thick newspaper, tape it and mark it clearly before handing it over",
+            "Tell the pourakarmika when a bag contains glass"
+          ],
+          "acceptedExamples": [
+            "Cool-drink and beer bottles",
+            "Pickle, jam and sauce jars",
+            "Horlicks and coffee jars",
+            "Perfume and cosmetic bottles",
+            "Glass medicine bottles, rinsed",
+            "Ghee and oil bottles"
+          ],
+          "rejectedExamples": [
+            "Broken glass loose in a bag (pourakarmikas sort waste by hand and are regularly injured)",
+            "Tube lights and bulbs (mercury and metal fittings — domestic hazardous)",
+            "Ceramic and porcelain crockery (not glass — reject waste)",
+            "Mirrors and window glass (coated and laminated)",
+            "Glass in the wet waste bin (dangerous for the composting crew)"
+          ],
+          "notes": "Bottles in good condition have a genuine resale value in Bengaluru and many kabadiwalas still buy them, while broken glass has almost none and is purely a safety issue — the wrap-and-label rule exists because much of the city's waste is sorted by hand.",
+          "dropOff": "Kabadiwala for intact bottles; ward DWCC for mixed and broken glass, wrapped and labelled."
+        },
+        "metal": {
+          "categoryId": "metal",
+          "binId": "blue-dry",
+          "binName": "Blue or white bin — dry waste (ona kasa)",
+          "colorName": "Blue or white",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse metal containers and hand them over as dry waste, or sell them to the scrap dealer by weight.",
+          "prepSteps": [
+            "Rinse tins and cans so they do not attract rats and flies",
+            "Keep aluminium separate from steel if you are selling — aluminium fetches several times the rate",
+            "Flatten foil into a ball rather than leaving it loose",
+            "Make sure aerosol cans are fully empty and mention them to the collector"
+          ],
+          "acceptedExamples": [
+            "Steel food and ghee tins",
+            "Aluminium cool-drink cans",
+            "Aluminium foil and foil containers from takeaway",
+            "Metal bottle caps and jar lids",
+            "Old vessels, tiffin boxes and cutlery",
+            "Paint-free metal fittings and hinges"
+          ],
+          "rejectedExamples": [
+            "Paint and chemical tins with residue (domestic hazardous)",
+            "Gas cylinders and camping canisters (return them to the dealer — never to any bin)",
+            "Foil coated in food and oil (contamination; rinse first)",
+            "Metal mixed into the wet waste bin (it damages the shredder at the composting plant)"
+          ],
+          "notes": "Scrap metal is the backbone of the kabadiwala's business, and old vessels and aluminium fetch the best rates in the city, so almost none of it reaches the municipal stream. Selling is both the easiest and the most effective route.",
+          "dropOff": "Scrap dealer or kabadiwala, ward DWCC, and LPG distributors for cylinders."
+        },
+        "organic": {
+          "categoryId": "organic",
+          "binId": "green-wet",
+          "binName": "Green bin — wet waste (hasi kasa)",
+          "colorName": "Green",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Hand wet waste over loose in the green bin to the daily auto-tipper collection.",
+          "prepSteps": [
+            "Keep the wet bin loose or lined with newspaper — never with a plastic bag",
+            "Drain excess water before handing it over",
+            "Hand it over daily; wet waste turns in hours in Bengaluru's climate",
+            "Coconut shells and hard garden waste can go in, but tell the collector if there is a large quantity"
+          ],
+          "acceptedExamples": [
+            "Vegetable peels and fruit waste",
+            "Cooked food, rice and leftover sambar solids",
+            "Tea and coffee grounds and used filter powder",
+            "Eggshells and bones",
+            "Coconut shells and flower waste from puja",
+            "Garden leaves and grass"
+          ],
+          "rejectedExamples": [
+            "Plastic bags used as a liner (they shred into the compost and are the top contaminant)",
+            "Sanitary napkins and diapers (red bin — they are a health hazard for the crew)",
+            "Coconut shells in large quantity at small composting units (they take months to break down)",
+            "Cooking oil poured in liquid (it fouls the compost pile)",
+            "Milk and curd sachets left inside the food waste (dry waste after rinsing)"
+          ],
+          "notes": "Wet waste is more than half of Bengaluru's household waste by weight and goes to composting and biomethanisation plants, so contamination is what decides whether it becomes soil or landfill. Bulk generators — apartments and offices above 100 kg a day — are legally required to process wet waste on site, which is why in-situ composting units are so common in the city.",
+          "dropOff": "Home composting with a khamba or drum unit, apartment-complex organic waste converter, or a community composting site."
+        },
+        "ewaste": {
+          "categoryId": "ewaste",
+          "binId": "ewaste-centre",
+          "binName": "E-waste collection centre / authorised recycler",
+          "colorName": "Violet (facility signage)",
+          "colorHex": "#7c3aed",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Hand electronics to a KSPCB-authorised e-waste recycler, a ward collection drive or a retailer take-back scheme.",
+          "prepSteps": [
+            "Wipe personal data and remove SIM and memory cards",
+            "Take out removable batteries and hand them over as domestic hazardous waste",
+            "Choose an authorised recycler, not a roadside dismantler who burns cables for copper",
+            "Keep the accessories together — chargers and cables are recycled with the device"
+          ],
+          "acceptedExamples": [
+            "Mobile phones, chargers and power banks",
+            "Laptops, monitors and printers",
+            "Mixers, grinders and induction stoves",
+            "Televisions and set-top boxes",
+            "Cables, wires and extension boards",
+            "CFL and LED lamps with electronics"
+          ],
+          "rejectedExamples": [
+            "E-waste in the dry waste bag (it needs licensed dismantling, not a sorting shed)",
+            "Informal burning of cables for copper (it releases dioxins and is illegal)",
+            "Devices with swollen lithium batteries left in a bin (fire risk)",
+            "CRT monitors given to a scrap dealer (leaded glass requires an authorised processor)"
+          ],
+          "notes": "Under the E-Waste (Management) Rules producers must run take-back, and Bengaluru has several KSPCB-authorised recyclers who will collect from your door for a reasonable quantity. The city has a long-standing informal e-waste economy, and choosing the authorised route is the single biggest health difference you can make here.",
+          "dropOff": "KSPCB-authorised recyclers such as the e-waste facilities in Dobbaspet and Peenya, ward e-waste drives, and retailer take-back counters."
+        },
+        "hazardous": {
+          "categoryId": "hazardous",
+          "binId": "red-sanitary",
+          "binName": "Red bin — sanitary & domestic hazardous waste",
+          "colorName": "Red",
+          "colorHex": "#dc2626",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Wrap domestic hazardous items, mark the packet and hand them over in the red bin stream.",
+          "prepSteps": [
+            "Keep chemicals in their original labelled container",
+            "Wrap tube lights and bulbs so they cannot shatter in the collector's hands",
+            "Tell the pourakarmika what the packet contains",
+            "Never mix hazardous items into the wet or dry bags"
+          ],
+          "acceptedExamples": [
+            "Batteries of all sizes",
+            "Expired medicines and used medicine strips",
+            "Tube lights, CFL and mercury bulbs",
+            "Insecticide and phenyl containers",
+            "Paint and thinner residues",
+            "Used syringes and sharps, capped and boxed"
+          ],
+          "rejectedExamples": [
+            "Batteries in the dry waste bag (they leak and injure the sorters at the DWCC)",
+            "Chemicals poured into the drain (they reach the lakes and the Vrishabhavathi valley)",
+            "Medicines mixed with food waste (they end up in the compost)",
+            "Sharps loose in a bag (needlestick injuries to pourakarmikas are a real and frequent harm)",
+            "Paint tins left with the scrap dealer (residue is hazardous and he cannot handle it)"
+          ],
+          "notes": "SWM Rules 2016 require domestic hazardous waste to be handed over separately, and BBMP wards run periodic collection for it alongside the red bin round. Pharmacies and hospitals will usually accept expired medicines for safe disposal.",
+          "dropOff": "Ward domestic hazardous waste collection days, pharmacy and hospital take-back for medicines and sharps."
+        },
+        "textile": {
+          "categoryId": "textile",
+          "binId": "blue-dry",
+          "binName": "Blue or white bin — dry waste (ona kasa)",
+          "colorName": "Blue or white",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Donate wearable clothes; hand clean, dry worn-out cloth over with the dry waste or at the DWCC.",
+          "prepSteps": [
+            "Wash and dry everything first",
+            "Set aside wearable clothing for a donation drive or an NGO rather than the waste stream",
+            "Bundle worn-out cloth so it does not scatter in the auto-tipper",
+            "Keep it separate from wet waste — damp cloth cannot be recycled"
+          ],
+          "acceptedExamples": [
+            "Clean clothing of any kind",
+            "Bedsheets, towels and curtains",
+            "Paired footwear",
+            "Bags and belts",
+            "Tailoring offcuts and remnants",
+            "Old sarees and dupattas"
+          ],
+          "rejectedExamples": [
+            "Wet or mouldy cloth (unusable and it spoils the rest of the dry bag)",
+            "Oil- and grease-soaked rags (they are hazardous, not dry waste)",
+            "Clothing in the wet bin (it wraps around the composting shredder)",
+            "Footwear handed over unpaired (of no resale value)"
+          ],
+          "notes": "Bengaluru has a busy second-hand and shoddy-yarn trade, so clean textiles handed to the DWCC or a kabadiwala do find a route, while donation drives and NGOs are a better destination for anything still wearable.",
+          "dropOff": "Ward DWCC textile bay, NGO and apartment-association donation drives, and cloth merchants who buy rags by weight."
+        },
+        "trash": {
+          "categoryId": "trash",
+          "binId": "red-sanitary",
+          "binName": "Red bin — sanitary & domestic hazardous waste",
+          "colorName": "Red",
+          "colorHex": "#dc2626",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Wrap sanitary and reject waste in newspaper, mark the packet with a red dot and hand it over in the red bin stream.",
+          "prepSteps": [
+            "Wrap sanitary napkins, diapers and dressings in newspaper",
+            "Mark the wrapped packet with a red dot or cross, as the SWM Rules require",
+            "Keep this bag completely separate from wet and dry waste",
+            "Never hand sharp or soiled items over loose"
+          ],
+          "acceptedExamples": [
+            "Sanitary napkins, tampons and diapers",
+            "Bandages, cotton and used masks",
+            "Sweepings and dust from the house",
+            "Broken ceramics and crockery",
+            "Soiled paper plates and food-stained packaging",
+            "Cigarette butts and ash"
+          ],
+          "rejectedExamples": [
+            "Sanitary waste in the wet bin (a direct health hazard for the composting workers)",
+            "Recyclables thrown in because the packet was already open (they are lost to landfill)",
+            "Construction debris and garden soil (contact BSWML for debris collection — it is a separate service)",
+            "Burning waste in the compound (illegal, and the leading local source of dioxins)",
+            "Dumping bags on street corners or into a stormwater drain (blackspot dumping clogs the drains and floods the road)"
+          ],
+          "notes": "The red stream exists mainly to protect the pourakarmikas, who handle waste by hand — the marked-packet rule is about their safety more than about disposal technology. Reject waste goes to the city's processing plants and landfill sites, which are the most constrained part of Bengaluru's system.",
+          "dropOff": "Construction and demolition debris: BSWML C&D waste processing facility, collection booked through the ward office."
+        }
+      }
+    },
+    {
+      "id": "au-melbourne",
+      "name": "Melbourne — Victorian four-bin kerbside standard",
+      "country": "Australia",
+      "authority": "Local council kerbside service under Recycling Victoria, the state's standardised four-stream waste and recycling reform",
+      "updated": "2026-01-22",
+      "notes": "Victoria is standardising every council onto the same four lids — yellow for mixed recycling, purple for glass, green for food and garden organics, and red for rubbish — so a Melbourne household ends up with more separation than most of Australia. The purple bin is the part that catches people out: once your council has rolled it out, glass must come out of the yellow bin entirely, because broken glass is what was contaminating the paper stream. Victoria has also banned e-waste from landfill since July 2019, so nothing with a plug or a battery may go in the red bin.",
+      "bins": [
+        {
+          "id": "yellow-recycling",
+          "name": "Recycling bin (yellow lid)",
+          "colorName": "Yellow lid",
+          "colorHex": "#facc15",
+          "textColorHex": "#111827",
+          "accepts": [
+            "plastic",
+            "paper",
+            "cardboard",
+            "metal"
+          ],
+          "description": "Mixed recycling for hard plastics, paper, cardboard and metals — collected fortnightly in most Melbourne councils. No glass once the purple bin has arrived."
+        },
+        {
+          "id": "purple-glass",
+          "name": "Glass bin (purple lid)",
+          "colorName": "Purple lid",
+          "colorHex": "#7e22ce",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "glass"
+          ],
+          "description": "Glass bottles and jars only, collected monthly or on request. Keeping glass separate is what lifts the quality of the whole recycling stream."
+        },
+        {
+          "id": "green-fogo",
+          "name": "FOGO bin (green lid)",
+          "colorName": "Light green lid",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "organic"
+          ],
+          "description": "Food organics and garden organics collected weekly and composted into soil conditioner for Victorian farms."
+        },
+        {
+          "id": "red-rubbish",
+          "name": "Rubbish bin (red lid)",
+          "colorName": "Red lid",
+          "colorHex": "#b91c1c",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "trash"
+          ],
+          "description": "Landfill waste, collected weekly or fortnightly. The smallest bin in the standard set, by design."
+        },
+        {
+          "id": "transfer-station",
+          "name": "Transfer station & Detox Your Home",
+          "colorName": "Orange (site signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "ewaste",
+            "hazardous"
+          ],
+          "description": "Council resource recovery centre or transfer station, plus the free Detox Your Home events for household chemicals run by Sustainability Victoria."
+        },
+        {
+          "id": "op-shop",
+          "name": "Op shop or textile recovery point",
+          "colorName": "Pink / charity branding",
+          "colorHex": "#db2777",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "textile"
+          ],
+          "description": "Charity op shops, clothing bins and retailer take-back. Donate during opening hours — dumping bags at a closed shop is illegal dumping."
+        }
+      ],
+      "categories": {
+        "plastic": {
+          "categoryId": "plastic",
+          "binId": "yellow-recycling",
+          "binName": "Recycling bin (yellow lid)",
+          "colorName": "Yellow lid",
+          "colorHex": "#facc15",
+          "textColorHex": "#111827",
+          "recyclable": true,
+          "disposal": "Empty and rinse hard plastic containers and put them loose in the yellow-lid recycling bin.",
+          "prepSteps": [
+            "Check for the 10c refund mark — eligible drink containers are worth money at a CDS Vic refund point",
+            "Rinse the container and tip out any liquid",
+            "Leave the lid off; loose lids are too small for the sorting screens",
+            "Put items in loose, never inside a plastic bag"
+          ],
+          "acceptedExamples": [
+            "Milk and juice bottles",
+            "Detergent, shampoo and cleaning bottles",
+            "Yoghurt and margarine tubs",
+            "Meat and fruit trays, rinsed",
+            "Takeaway containers",
+            "Large drink bottles over 3 litres, which fall outside the CDS"
+          ],
+          "rejectedExamples": [
+            "Soft plastics such as bread bags and chip packets (scrunchable plastic tangles the sorting line — red bin in most of Melbourne)",
+            "Plastic bags used to hold the recycling (sorters pull the whole bag out as rubbish)",
+            "Compostable and bioplastic containers (they are neither recyclable nor accepted in most FOGO)",
+            "Polystyrene foam and meat-tray foam (no kerbside processing in Victoria)",
+            "Garden hoses, toys and clothes hangers (they wrap around the machinery)"
+          ],
+          "notes": "Victoria's Container Deposit Scheme has paid 10 cents per eligible container since November 2023, so drink bottles and cans are better taken to a refund point than put in the yellow bin. Soft plastics have had no reliable kerbside route since the REDcycle collapse; supermarket collection is returning only gradually through a supervised trial.",
+          "dropOff": "CDS Vic refund points for 150 ml to 3 L drink containers; supermarket soft-plastic collection where the trial has reached your store."
+        },
+        "paper": {
+          "categoryId": "paper",
+          "binId": "yellow-recycling",
+          "binName": "Recycling bin (yellow lid)",
+          "colorName": "Yellow lid",
+          "colorHex": "#facc15",
+          "textColorHex": "#111827",
+          "recyclable": true,
+          "disposal": "Put clean, dry paper loose in the yellow-lid recycling bin.",
+          "prepSteps": [
+            "Keep it dry — Melbourne's fortnightly collection means a wet bin stays wet",
+            "Leave staples and window envelopes in place",
+            "Put shredded paper inside a paper bag, or better still in the FOGO bin if your council allows it",
+            "Remove plastic wrapping from magazines and catalogues"
+          ],
+          "acceptedExamples": [
+            "Newspapers and magazines",
+            "Office paper and school work",
+            "Envelopes, including window envelopes",
+            "Junk mail and catalogues",
+            "Paper bags",
+            "Greeting cards without glitter"
+          ],
+          "rejectedExamples": [
+            "Receipts on thermal paper (the chemical coating contaminates the pulp)",
+            "Tissues, paper towel and napkins (FOGO or red bin — the fibres are spent)",
+            "Waxed and laminated paper (the coating cannot be separated)",
+            "Photographs (plastic-coated)",
+            "Paper that has been in the rain inside an open bin (worthless once soaked)"
+          ],
+          "notes": "Paper quality is the whole reason Victoria introduced the purple glass bin: glass shards embedded in paper bales were the main contaminant, and separating glass has lifted the value of Melbourne's paper stream substantially.",
+          "dropOff": "Large quantities: council transfer station paper and cardboard bay."
+        },
+        "cardboard": {
+          "categoryId": "cardboard",
+          "binId": "yellow-recycling",
+          "binName": "Recycling bin (yellow lid)",
+          "colorName": "Yellow lid",
+          "colorHex": "#facc15",
+          "textColorHex": "#111827",
+          "recyclable": true,
+          "disposal": "Flatten boxes and put them in the yellow-lid recycling bin.",
+          "prepSteps": [
+            "Remove all tape, labels and plastic or foam inserts",
+            "Flatten every box — the yellow bin is only emptied fortnightly in most councils",
+            "Rinse and flatten drink cartons, and check whether yours carries a 10c refund mark",
+            "Tear greasy sections off pizza boxes and put those in the FOGO or red bin"
+          ],
+          "acceptedExamples": [
+            "Delivery and moving boxes",
+            "Cereal and cracker boxes",
+            "Egg cartons",
+            "Toilet-roll and paper-towel tubes",
+            "Milk and juice cartons, rinsed",
+            "Clean pizza box lids"
+          ],
+          "rejectedExamples": [
+            "Greasy pizza box bases (oil ruins the fibre — FOGO if your council accepts soiled paper)",
+            "Waxed produce boxes (the coating blocks re-pulping)",
+            "Boxes still full of polystyrene or bubble wrap (remove it first)",
+            "Cardboard stacked beside the bin (Melbourne trucks are automated and cannot collect side waste)"
+          ],
+          "notes": "Drink cartons between 150 ml and 3 L carry the 10-cent container deposit refund in Victoria, so a school lunchbox popper is worth returning rather than binning.",
+          "dropOff": "Council transfer station cardboard bay for moving-house quantities; CDS Vic refund points for eligible cartons."
+        },
+        "glass": {
+          "categoryId": "glass",
+          "binId": "purple-glass",
+          "binName": "Glass bin (purple lid)",
+          "colorName": "Purple lid",
+          "colorHex": "#7e22ce",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse bottles and jars, take the lids off and put them in the purple-lid glass bin only.",
+          "prepSteps": [
+            "Empty and rinse; labels can stay on",
+            "Take metal and plastic lids off and put those in the yellow bin",
+            "Check for the 10c refund mark on small drink bottles before binning them",
+            "Never put glass in the yellow bin once your purple bin has arrived"
+          ],
+          "acceptedExamples": [
+            "Wine and beer bottles",
+            "Spirit bottles",
+            "Pasta sauce and jam jars",
+            "Vegemite and coffee jars",
+            "Glass soft-drink bottles over 3 litres, outside the CDS",
+            "Olive oil and vinegar bottles"
+          ],
+          "rejectedExamples": [
+            "Drinking glasses and Pyrex (heat-treated glass will not melt with container glass)",
+            "Window and mirror glass (different composition and coatings — transfer station)",
+            "Ceramic plates and mugs (they never melt and stay as stones)",
+            "Light globes (metal fittings; fluorescent types also contain mercury)",
+            "Glass in the yellow bin (the mistake the purple bin exists to stop)"
+          ],
+          "notes": "Separating glass is Recycling Victoria's flagship change: whole bottles collected on their own can be remade into bottles, while crushed glass mixed through a yellow bin mostly ends up as low-value road base. The purple bin is usually emptied monthly, so let bottles build up.",
+          "dropOff": "CDS Vic refund points for eligible bottles; council transfer station for window glass, Pyrex and mirrors."
+        },
+        "metal": {
+          "categoryId": "metal",
+          "binId": "yellow-recycling",
+          "binName": "Recycling bin (yellow lid)",
+          "colorName": "Yellow lid",
+          "colorHex": "#facc15",
+          "textColorHex": "#111827",
+          "recyclable": true,
+          "disposal": "Rinse cans, tins and clean foil and put them loose in the yellow-lid recycling bin.",
+          "prepSteps": [
+            "Check drink cans for the 10c refund mark first",
+            "Rinse tins and push the cut lid inside the can",
+            "Scrunch clean foil into a ball at least golf-ball size so the eddy-current separator catches it",
+            "Make sure aerosols are completely empty; do not pierce them"
+          ],
+          "acceptedExamples": [
+            "Aluminium drink cans over the CDS size limit, and non-eligible cans",
+            "Steel food and pet-food tins",
+            "Clean aluminium foil and foil trays",
+            "Empty aerosol cans",
+            "Jar lids and bottle caps",
+            "Biscuit tins"
+          ],
+          "rejectedExamples": [
+            "Gas bottles and camping canisters (they explode in the truck — transfer station only)",
+            "Paint tins with paint still inside (Detox Your Home)",
+            "Pots, pans and scrap metal (too heavy for the sorting plant — transfer station scrap bay)",
+            "Foil with food baked on (contamination)",
+            "Coat hangers (they wrap around the sorting screens)"
+          ],
+          "notes": "Aluminium cans in the 150 ml to 3 L range are worth 10 cents each under the Victorian CDS, and refund points accept them by the bagful — a household's cans add up faster than most people expect.",
+          "dropOff": "CDS Vic refund points for eligible cans; council transfer station or a scrap metal yard for pots, pans and larger metal."
+        },
+        "organic": {
+          "categoryId": "organic",
+          "binId": "green-fogo",
+          "binName": "FOGO bin (green lid)",
+          "colorName": "Light green lid",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put all food scraps and garden waste in the green-lid FOGO bin, collected weekly.",
+          "prepSteps": [
+            "Use the kitchen caddy with newspaper or an AS 4736 certified compostable liner",
+            "Include meat, bones, dairy and citrus — commercial composting handles them all",
+            "Empty the caddy into the green bin every day or two in summer",
+            "Keep branches under the length your council specifies, and leave soil and rocks out"
+          ],
+          "acceptedExamples": [
+            "Fruit and vegetable scraps",
+            "Meat, bones and seafood shells",
+            "Bread, rice, pasta and dairy",
+            "Tea bags and coffee grounds",
+            "Lawn clippings, leaves and prunings",
+            "Soiled paper towel and shredded paper, where the council allows it"
+          ],
+          "rejectedExamples": [
+            "Plastic bags, including 'degradable' ones (they shred into the compost and fail the AS 4454 standard)",
+            "Compostable coffee cups and cutlery that are not AS 4736 certified (they do not break down in the process time)",
+            "Dog waste and kitty litter unless your council explicitly allows it (pathogen limits)",
+            "Treated timber and painted wood (preservative chemicals end up in farm compost)",
+            "Soil, rocks and rubble (heavy, abrasive and of no compost value)"
+          ],
+          "notes": "FOGO compost goes to Victorian farms and landscape supplies, and that end market is why the standard is so strict about plastic: contamination above a low threshold sends a whole load to landfill. Every Victorian council is required to offer a FOGO service by 2027.",
+          "dropOff": "Large garden loads: council green waste drop-off at the transfer station, often free for a set number of visits per year."
+        },
+        "ewaste": {
+          "categoryId": "ewaste",
+          "binId": "transfer-station",
+          "binName": "Transfer station & Detox Your Home",
+          "colorName": "Orange (site signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Take e-waste to a council transfer station, a resource recovery centre or a retailer drop-off — it is banned from all kerbside bins in Victoria.",
+          "prepSteps": [
+            "Back up and factory-reset the device, then remove SIM and memory cards",
+            "Remove loose batteries and hand them in separately",
+            "Bring the cables and charger with the device",
+            "Check your council's website: many offer free e-waste drop-off and some collect it at the kerb on request"
+          ],
+          "acceptedExamples": [
+            "Televisions, monitors and computers",
+            "Phones, tablets and laptops",
+            "Kettles, toasters and microwaves",
+            "Power tools and their battery packs",
+            "Cables, chargers and power boards",
+            "Vacuum cleaners and electric toys"
+          ],
+          "rejectedExamples": [
+            "Any e-waste in the red bin (banned from Victorian landfill since 1 July 2019)",
+            "E-waste in the yellow bin (it is not packaging and damages the sorting plant)",
+            "Vapes in any kerbside bin (lithium batteries — a documented cause of truck fires)",
+            "Fridges and air conditioners left on the nature strip (refrigerant must be degassed by a licensed operator)"
+          ],
+          "notes": "The Victorian e-waste landfill ban is enforced statewide and every council has a drop-off point within reach, while Officeworks, Battery World and the National Television and Computer Recycling Scheme cover most small items for free.",
+          "dropOff": "Council transfer station or resource recovery centre, Officeworks and retailer drop-off boxes, and B-cycle battery collection points."
+        },
+        "hazardous": {
+          "categoryId": "hazardous",
+          "binId": "transfer-station",
+          "binName": "Transfer station & Detox Your Home",
+          "colorName": "Orange (site signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Take household chemicals to a free Detox Your Home event or a permanent drop-off site — never any kerbside bin.",
+          "prepSteps": [
+            "Keep everything in its original labelled container",
+            "Never mix chemicals, and do not decant into food or drink containers",
+            "Tape the terminals of lithium and button batteries before transport",
+            "Book a Detox Your Home session if your nearest site requires it, and check the 20 kg or 20 L limit"
+          ],
+          "acceptedExamples": [
+            "Paint, solvents and turpentine",
+            "Motor oil, coolant and brake fluid",
+            "Pesticides, herbicides and pool chemicals",
+            "Household and lithium batteries",
+            "Fluorescent tubes and compact fluorescent globes",
+            "Gas bottles and camping canisters"
+          ],
+          "rejectedExamples": [
+            "Batteries in any kerbside bin (they have caused fires in Melbourne trucks and at sorting facilities)",
+            "Paint tipped down the stormwater drain (it flows untreated into the Yarra and Port Phillip Bay)",
+            "Medicines in the bin or toilet (return them to a pharmacy under the RUM project)",
+            "Half-full aerosols in the yellow bin (only genuinely empty cans belong there)",
+            "Asbestos taken to a general transfer station (it needs a licensed facility and prior arrangement)"
+          ],
+          "notes": "Detox Your Home is a free Sustainability Victoria service and includes a permanent network of drop-off sites as well as mobile events, and B-cycle battery drop-off points are now in most supermarkets and hardware stores. Paint is also covered by Paintback at participating sites.",
+          "dropOff": "Detox Your Home events and permanent sites, Paintback drop-offs, B-cycle battery points, and pharmacies for medicines through the Return Unwanted Medicines project."
+        },
+        "textile": {
+          "categoryId": "textile",
+          "binId": "op-shop",
+          "binName": "Op shop or textile recovery point",
+          "colorName": "Pink / charity branding",
+          "colorHex": "#db2777",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Take clean, dry clothing to an op shop during opening hours or to a charity clothing bin.",
+          "prepSteps": [
+            "Wash and dry everything before donating",
+            "Donate inside the shop during opening hours — bags left at a closed door are illegal dumping and cost charities millions each year",
+            "Tie shoes together in pairs",
+            "Separate genuinely unwearable fabric for a textile recovery bin rather than an op shop"
+          ],
+          "acceptedExamples": [
+            "Clean, wearable clothing",
+            "Paired shoes in good condition",
+            "Bed linen, towels and blankets",
+            "Curtains and fabric lengths",
+            "Bags, belts and hats",
+            "Clean soft toys"
+          ],
+          "rejectedExamples": [
+            "Textiles in the yellow recycling bin (fabric wraps around the sorting equipment)",
+            "Wet or mouldy clothing (it ruins everything packed with it)",
+            "Bags left outside a closed op shop (rain and scavenging turn a donation into landfill)",
+            "Oily rags and paint-soaked cloth (fire risk — Detox Your Home)",
+            "Broken, stained items handed to a charity shop (charities pay to send unsellable donations to landfill)"
+          ],
+          "notes": "Australia sends a very large volume of clothing to landfill per person, and op shops carry the disposal cost of unsellable donations, so honest sorting matters: sellable items to the shop, worn-out fabric to a dedicated textile recovery bin like Upparel or a council textile collection.",
+          "dropOff": "Charity op shops, charity clothing bins, retailer take-back programs, and council textile recovery collections."
+        },
+        "trash": {
+          "categoryId": "trash",
+          "binId": "red-rubbish",
+          "binName": "Rubbish bin (red lid)",
+          "colorName": "Red lid",
+          "colorHex": "#b91c1c",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Bag it and put it in the red-lid rubbish bin.",
+          "prepSteps": [
+            "Bag waste so nothing escapes when the truck tips the bin",
+            "Wrap broken glass and sharps in newspaper and label the bundle",
+            "Keep the lid closed and the bin under its weight limit or it will not be collected",
+            "Put the bin out with the lid arrows facing the road for the automated arm"
+          ],
+          "acceptedExamples": [
+            "Soft plastics such as bread bags, chip packets and cling wrap",
+            "Nappies and sanitary products",
+            "Polystyrene foam packaging",
+            "Broken crockery and drinking glasses",
+            "Disposable coffee cups without a compostable certification",
+            "Vacuum dust and sweepings"
+          ],
+          "rejectedExamples": [
+            "E-waste of any kind (banned from Victorian landfill)",
+            "Batteries and vapes (fire risk — B-cycle drop-off instead)",
+            "Food and garden waste (FOGO takes both, and green bin capacity is free)",
+            "Hot ashes from a barbecue or fireplace (they have set alight bins and trucks)",
+            "Building rubble and soil (weight limit; take it to the transfer station)"
+          ],
+          "notes": "Victoria's landfill levy makes the red bin the most expensive stream for your council, and with FOGO and the purple glass bin running, a well-sorted household usually finds the red bin is the emptiest of the four.",
+          "dropOff": "Hard rubbish: your council's annual or on-request hard waste collection, or the transfer station."
+        }
+      }
+    },
+    {
+      "id": "ca-toronto",
+      "name": "Toronto — Blue Bin, Green Bin and Garbage",
+      "country": "Canada",
+      "authority": "City of Toronto Solid Waste Management Services",
+      "updated": "2026-02-05",
+      "notes": "Toronto runs three carts — Blue Bin recycling, Green Bin organics and a grey Garbage bin — with the Green Bin collected weekly and the other two on alternating weeks. Two things make it unusual: the Green Bin uses anaerobic digestion, so it takes diapers, pet waste and even plastic bag liners that almost no other city will accept, and the garbage bin is charged by size, so shrinking it saves real money. The mistake that fills the city's contamination reports is the black plastic takeout container, which the optical sorters at the recycling facility physically cannot see and which therefore belongs in the garbage.",
+      "bins": [
+        {
+          "id": "blue-bin",
+          "name": "Blue Bin (recycling)",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "plastic",
+            "paper",
+            "cardboard",
+            "glass",
+            "metal"
+          ],
+          "description": "Every-other-week recycling cart for containers, paper and cardboard, placed loose. Clean plastic film is the one exception: bundle it inside a single tied bag."
+        },
+        {
+          "id": "green-bin",
+          "name": "Green Bin (organics)",
+          "colorName": "Green",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "organic"
+          ],
+          "description": "Weekly organics cart processed by anaerobic digestion at the Dufferin and Disco facilities, producing biogas and digestate."
+        },
+        {
+          "id": "garbage-bin",
+          "name": "Garbage Bin",
+          "colorName": "Grey",
+          "colorHex": "#52525b",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "trash"
+          ],
+          "description": "Every-other-week garbage cart in four sizes, from small to extra-large, with the annual fee rising with the size you choose."
+        },
+        {
+          "id": "depot",
+          "name": "Drop-off Depot / Community Environment Day",
+          "colorName": "Orange (depot signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "ewaste",
+            "hazardous"
+          ],
+          "description": "The City's Drop-off Depots and Household Hazardous Waste depots take electronics and chemicals free of charge; the Toxic Taxi collects larger quantities from your door."
+        },
+        {
+          "id": "textile-drop",
+          "name": "Textile drop box or charity donation",
+          "colorName": "Pink / charity branding",
+          "colorHex": "#db2777",
+          "textColorHex": "#ffffff",
+          "accepts": [
+            "textile"
+          ],
+          "description": "Charity donation bins and textile drop boxes, including the containers at City Drop-off Depots run with charity partners."
+        }
+      ],
+      "categories": {
+        "plastic": {
+          "categoryId": "plastic",
+          "binId": "blue-bin",
+          "binName": "Blue Bin (recycling)",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Empty and rinse plastic containers and put them loose in the Blue Bin; bundle clean film inside one tied bag.",
+          "prepSteps": [
+            "Rinse out food and drink residue",
+            "Put the lid back on bottles and jugs so it is not lost through the screens",
+            "Collect clean plastic bags, overwrap and film in one bag, tie it shut and put that in the bin",
+            "Keep black plastic out — it goes in the garbage"
+          ],
+          "acceptedExamples": [
+            "Water, pop and juice bottles",
+            "Milk jugs and detergent bottles",
+            "Yogurt, margarine and sour cream tubs",
+            "Clear clamshell containers for berries and salads",
+            "Plastic bags, bread bags and overwrap, bagged together",
+            "Plastic lids from paper coffee cups"
+          ],
+          "rejectedExamples": [
+            "Black plastic takeout containers and trays (optical sorters cannot detect carbon black, so they end up as residue)",
+            "Compostable and biodegradable plastics (they look like PET to the sorter and are not accepted in the Green Bin either)",
+            "Polystyrene foam containers and packing peanuts (Toronto removed foam from the Blue Bin list)",
+            "Plastic toys, hangers and hoses (not packaging — they jam the sorting line)",
+            "Containers that held motor oil or chemicals (hazardous residue — HHW depot)"
+          ],
+          "notes": "Toronto is one of the few large North American programs that takes plastic film at the kerb, but only bagged together — loose bags shut the sorting line down. Ontario's Blue Box program moved to full producer responsibility in 2023 and 2026, so the accepted-materials list is now set province-wide rather than by the City alone.",
+          "dropOff": "Foam and film in quantity: City Drop-off Depots; the Waste Wizard search tool settles any doubtful item."
+        },
+        "paper": {
+          "categoryId": "paper",
+          "binId": "blue-bin",
+          "binName": "Blue Bin (recycling)",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put clean, dry paper loose in the Blue Bin.",
+          "prepSteps": [
+            "Keep paper dry — Blue Bin collection is only every other week",
+            "Leave staples and window envelopes in place",
+            "Bag shredded paper in a clear or paper bag so it does not blow away",
+            "Put soiled paper towel and napkins in the Green Bin instead"
+          ],
+          "acceptedExamples": [
+            "Newspapers and flyers",
+            "Magazines and catalogues",
+            "Office paper and school work",
+            "Envelopes, including window envelopes",
+            "Paper coffee cups, with the lid recycled separately",
+            "Paper bags and gift wrap without foil"
+          ],
+          "rejectedExamples": [
+            "Thermal-paper receipts (the coating contaminates recycled pulp)",
+            "Tissues, paper towel and napkins (Green Bin — they are organics in Toronto)",
+            "Foil-lined and glittered wrapping paper (the metallised layer is not fibre)",
+            "Photographs and laminated sheets (plastic layers)",
+            "Wet or greasy paper (moisture and oil ruin the bale)"
+          ],
+          "notes": "Toronto accepts paper hot-drink cups in the Blue Bin, which is unusual in North America, but the lid must be separated and the cup emptied — a cup with coffee still in it soaks the paper around it.",
+          "dropOff": "Shredded paper in bulk and surplus cardboard: City Drop-off Depots."
+        },
+        "cardboard": {
+          "categoryId": "cardboard",
+          "binId": "blue-bin",
+          "binName": "Blue Bin (recycling)",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Flatten boxes and put them in the Blue Bin, or beside it if they are bundled and tied.",
+          "prepSteps": [
+            "Remove tape, labels and any foam or plastic inserts",
+            "Flatten boxes so two weeks of recycling still fits",
+            "Rinse cartons and drink boxes and put the straw in the garbage",
+            "Bundle and tie extra cardboard beside the bin, no larger than about a metre square"
+          ],
+          "acceptedExamples": [
+            "Corrugated shipping boxes",
+            "Cereal, cracker and shoe boxes",
+            "Egg cartons",
+            "Paper towel and toilet-paper tubes",
+            "Milk cartons and juice boxes, rinsed",
+            "Clean pizza box lids"
+          ],
+          "rejectedExamples": [
+            "Greasy pizza box bottoms (Green Bin — soiled paper is organics in Toronto)",
+            "Waxed cardboard produce boxes (the coating blocks re-pulping)",
+            "Boxes still holding foam or bubble wrap (sort them first)",
+            "Cardboard soaked by rain or snow beside the bin (wet fibre loses most of its value)"
+          ],
+          "notes": "Because soiled paper belongs in Toronto's Green Bin, the greasy half of a pizza box has a better destination here than in most cities — tear the box in two and use both bins.",
+          "dropOff": "Moving quantities of flattened cardboard: any of the City's seven Drop-off Depots, free for residents."
+        },
+        "glass": {
+          "categoryId": "glass",
+          "binId": "blue-bin",
+          "binName": "Blue Bin (recycling)",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse glass bottles and jars, take the lids off and put them in the Blue Bin.",
+          "prepSteps": [
+            "Empty and rinse; labels can stay on",
+            "Put metal lids in the Blue Bin separately — they are recycled as steel or aluminium",
+            "Return alcohol containers to The Beer Store for the Ontario Deposit Return refund",
+            "Never put broken glass in the Blue Bin — wrap it for the garbage instead"
+          ],
+          "acceptedExamples": [
+            "Pasta sauce and salsa jars",
+            "Jam and pickle jars",
+            "Non-alcoholic glass drink bottles",
+            "Coffee and instant-drink jars",
+            "Baby food jars",
+            "Cosmetic bottles with the pump removed"
+          ],
+          "rejectedExamples": [
+            "Drinking glasses, Pyrex and ceramics (different melting behaviour — garbage)",
+            "Window and mirror glass (coated and laminated — Drop-off Depot)",
+            "Broken glass of any kind (a hand-sorting hazard — wrap it and put it in the garbage)",
+            "Light bulbs (LEDs and CFLs contain electronics and mercury — HHW depot)",
+            "Beer, wine and liquor bottles (they carry a deposit refund at The Beer Store, so binning them throws the money away)"
+          ],
+          "notes": "Ontario's deposit-return system covers all alcohol containers, so wine bottles, beer cans and liquor bottles carry a 10 or 20 cent refund at The Beer Store — money that is simply lost if you put them in the Blue Bin.",
+          "dropOff": "The Beer Store for all alcohol containers; City Drop-off Depots for window glass and mirrors."
+        },
+        "metal": {
+          "categoryId": "metal",
+          "binId": "blue-bin",
+          "binName": "Blue Bin (recycling)",
+          "colorName": "Blue",
+          "colorHex": "#1d4ed8",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Rinse cans, foil and empty aerosols and put them loose in the Blue Bin.",
+          "prepSteps": [
+            "Rinse food tins and push the cut lid inside the can",
+            "Scrunch clean aluminium foil into a ball bigger than a golf ball",
+            "Make sure aerosol cans are completely empty; leave the plastic cap on",
+            "Return beer and cooler cans to The Beer Store for the deposit"
+          ],
+          "acceptedExamples": [
+            "Soup, bean and pet food cans",
+            "Non-alcoholic pop cans",
+            "Clean aluminium foil and foil pie plates",
+            "Empty aerosol cans such as deodorant",
+            "Metal jar lids and bottle caps",
+            "Clean metal takeout trays"
+          ],
+          "rejectedExamples": [
+            "Paint cans with paint inside (HHW depot; fully dried empty cans may go in the garbage)",
+            "Propane cylinders and camping canisters (explosion risk — HHW depot)",
+            "Pots, pans, cutlery and scrap metal (Drop-off Depot scrap metal pile)",
+            "Foil with food baked on (contamination)",
+            "Coat hangers (they wrap around the sorting screens)"
+          ],
+          "notes": "Scrap metal is accepted free at the City's Drop-off Depots, so an old pan or barbecue never needs to go in the garbage — and aluminium recovered from the Blue Bin is the single highest-value material Toronto collects.",
+          "dropOff": "The Beer Store for alcohol cans; City Drop-off Depots for scrap metal and appliances."
+        },
+        "organic": {
+          "categoryId": "organic",
+          "binId": "green-bin",
+          "binName": "Green Bin (organics)",
+          "colorName": "Green",
+          "colorHex": "#15803d",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Put all food waste and soiled paper in the weekly Green Bin.",
+          "prepSteps": [
+            "Line the kitchen container with newspaper or a plastic bag — Toronto's process screens plastic out afterwards",
+            "Include meat, bones, dairy and cooked food; anaerobic digestion handles them all",
+            "Add soiled paper towel, napkins and greasy pizza board",
+            "Latch the bin lid against raccoons and put it out by 7am on collection day"
+          ],
+          "acceptedExamples": [
+            "Fruit and vegetable scraps",
+            "Meat, fish and bones",
+            "Dairy, bread, rice and pasta",
+            "Coffee grounds, filters and tea bags",
+            "Soiled paper towel, tissues and napkins",
+            "Diapers, sanitary products, pet waste and kitty litter"
+          ],
+          "rejectedExamples": [
+            "Yard waste, leaves and branches (separate seasonal collection, not the Green Bin)",
+            "Compostable and biodegradable plastic containers (Toronto's digesters do not break them down)",
+            "Cooking oil in quantity (it disrupts the digester — HHW depot takes it)",
+            "Plastic packaging around the food (unwrap it first)",
+            "Dirt, sod and rocks (not organic feedstock)"
+          ],
+          "notes": "Toronto's Green Bin is the most permissive organics program in Canada because anaerobic digestion at the Dufferin and Disco plants can take diapers, pet waste and bagged food, with the plastic removed mechanically before digestion. Yard waste is the exception: it goes out separately in paper leaf-and-yard-waste bags on its own seasonal schedule.",
+          "dropOff": "Leaf and yard waste: seasonal kerbside collection in paper yard-waste bags, or a City Drop-off Depot."
+        },
+        "ewaste": {
+          "categoryId": "ewaste",
+          "binId": "depot",
+          "binName": "Drop-off Depot / Community Environment Day",
+          "colorName": "Orange (depot signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Take electronics to a City Drop-off Depot, a Community Environment Day or a retailer take-back point, free of charge.",
+          "prepSteps": [
+            "Wipe your data and sign out of accounts first",
+            "Remove loose batteries and hand them over as hazardous waste",
+            "Bring cables and chargers along with the device",
+            "Bring proof of Toronto residence; depots are for household quantities only"
+          ],
+          "acceptedExamples": [
+            "Televisions, monitors and computers",
+            "Phones, tablets and laptops",
+            "Printers, keyboards and routers",
+            "Small kitchen appliances such as kettles and toasters",
+            "Cables, chargers and power bars",
+            "Power tools and their batteries"
+          ],
+          "rejectedExamples": [
+            "Electronics in the Blue Bin (they are not packaging and wreck the sorting equipment)",
+            "Electronics in the garbage (banned from Toronto collection, and recoverable metals are lost)",
+            "Vapes and e-cigarettes in any bin (lithium cells cause truck and facility fires)",
+            "Fridges, freezers and air conditioners without arrangement (refrigerant must be recovered — book a special pickup)"
+          ],
+          "notes": "Electronic waste is accepted free at all seven Drop-off Depots year-round, and Toronto also takes it at Community Environment Days when they run in your ward. Appliances with refrigerant are handled through a booked pickup rather than the depot.",
+          "dropOff": "City Drop-off Depots, Community Environment Days, and retailer take-back counters."
+        },
+        "hazardous": {
+          "categoryId": "hazardous",
+          "binId": "depot",
+          "binName": "Drop-off Depot / Community Environment Day",
+          "colorName": "Orange (depot signage)",
+          "colorHex": "#9a3412",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Take household hazardous waste to a Drop-off Depot, or book the free Toxic Taxi for larger quantities.",
+          "prepSteps": [
+            "Keep products in their original labelled containers",
+            "Never mix chemicals together",
+            "Tape the terminals of lithium and button batteries",
+            "Book the Toxic Taxi if you have 10 kg or 10 L or more; it collects from your door at no charge"
+          ],
+          "acceptedExamples": [
+            "Paint, stain, solvents and thinners",
+            "Motor oil, oil filters and antifreeze",
+            "Pesticides, fertilizer and pool chemicals",
+            "Batteries of every type, including lithium-ion",
+            "Fluorescent tubes and CFL bulbs",
+            "Propane tanks and camping canisters"
+          ],
+          "rejectedExamples": [
+            "Batteries in the Blue Bin or Garbage (crushed lithium cells are a leading cause of facility fires)",
+            "Paint poured down the drain or into the yard (it reaches Lake Ontario through the storm sewers)",
+            "Medication in the toilet or bin (pharmacies take it back free)",
+            "Needles and sharps loose in the garbage (use a sharps container and return it to a pharmacy)",
+            "Motor oil in the garbage bin (one litre contaminates a very large volume of water)"
+          ],
+          "notes": "The Toxic Taxi is a genuinely free City service for larger household quantities, which is worth knowing before a basement clear-out. Empty, fully dried-out latex paint cans are the exception to the rule and may go in the garbage with the lid off.",
+          "dropOff": "City Drop-off Depots and HHW depots, the Toxic Taxi booking line, pharmacies for medication and sharps, and Home Depot or Canadian Tire battery boxes."
+        },
+        "textile": {
+          "categoryId": "textile",
+          "binId": "textile-drop",
+          "binName": "Textile drop box or charity donation",
+          "colorName": "Pink / charity branding",
+          "colorHex": "#db2777",
+          "textColorHex": "#ffffff",
+          "recyclable": true,
+          "disposal": "Bag clean, dry clothing and take it to a charity donation bin, a textile drop box or a Drop-off Depot textile container.",
+          "prepSteps": [
+            "Wash and fully dry everything before donating",
+            "Bag it so it stays dry inside the drop box",
+            "Tie shoes together in pairs",
+            "Send worn-out fabric too — textile recyclers grade it for wiping cloths and insulation"
+          ],
+          "acceptedExamples": [
+            "Clothing in any wearable condition",
+            "Shoes and boots in pairs",
+            "Bed linen, towels and blankets",
+            "Curtains and fabric remnants",
+            "Purses, belts and hats",
+            "Clean soft toys"
+          ],
+          "rejectedExamples": [
+            "Textiles in the Blue Bin (fabric wraps around the sorting shafts and stops the line)",
+            "Wet or mouldy fabric (it spoils everything bagged with it)",
+            "Oily or solvent-soaked rags (spontaneous combustion risk — HHW depot)",
+            "Mattresses and large upholstered furniture (bulky item pickup, not a textile bin)",
+            "Donations left outside a full bin (rain and snow turn them into garbage)"
+          ],
+          "notes": "Textiles are a large share of what Toronto still sends to landfill even though very little of it needs to go there, and the City runs textile drop-off containers at Drop-off Depots with charity partners alongside the familiar Diabetes Canada and Goodwill bins.",
+          "dropOff": "Charity donation bins, Diabetes Canada and Goodwill drop boxes, retailer take-back, and textile containers at City Drop-off Depots."
+        },
+        "trash": {
+          "categoryId": "trash",
+          "binId": "garbage-bin",
+          "binName": "Garbage Bin",
+          "colorName": "Grey",
+          "colorHex": "#52525b",
+          "textColorHex": "#ffffff",
+          "recyclable": false,
+          "disposal": "Bag it and put it in the grey Garbage Bin.",
+          "prepSteps": [
+            "Bag waste so nothing spills when the automated arm tips the cart",
+            "Wrap broken glass and sharp objects in cardboard and label the bundle",
+            "Keep the lid closed and the cart under its weight limit",
+            "Set the cart out by 7am with the handle facing your house"
+          ],
+          "acceptedExamples": [
+            "Black plastic containers and trays",
+            "Polystyrene foam packaging and cups",
+            "Broken glass, crockery and drinking glasses",
+            "Chip bags, candy wrappers and stand-up pouches",
+            "Disposable masks and cleaning wipes",
+            "Vacuum bags and sweepings"
+          ],
+          "rejectedExamples": [
+            "Food waste and soiled paper (Toronto's Green Bin takes both, including diapers and pet waste)",
+            "Electronics and batteries (banned from the garbage; free at the depots)",
+            "Liquid paint and chemicals (HHW depot)",
+            "Hot ashes from a fireplace or barbecue (a recurring cause of cart and truck fires)",
+            "Construction debris and renovation waste (not collected at the kerb — use a depot or a licensed hauler)"
+          ],
+          "notes": "Toronto's garbage bin fee rises with cart size, so households that use the Green Bin and Blue Bin properly can downsize to a small cart and save money every year. Anything you are unsure about can be looked up in the City's Waste Wizard search tool.",
+          "dropOff": "Oversized and bulky items: set out with your garbage on collection day, within the item limits, or take them to a Drop-off Depot."
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+# Only consulted when backend/ is used as a build context directly
+# (e.g. `docker build backend/`). The compose build uses the repo root context and the
+# root .dockerignore; this file keeps ad-hoc builds from the backend directory tidy.
+
+.git
+node_modules
+dist
+build
+coverage
+.env
+.env.local
+.env.*.local
+*.db
+*.db-wal
+*.db-shm
+data
+Dockerfile
+.dockerignore

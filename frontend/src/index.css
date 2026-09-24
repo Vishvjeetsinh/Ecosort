@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* One focus treatment for every interactive element, keyboard-only. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-950;
+  }
+
+  /* Remove the UA focus ring only where :focus-visible above takes over. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    @apply bg-brand-200 text-brand-900;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-semibold tracking-tight;
+  }
+
+  hr {
+    @apply border-slate-200 dark:border-slate-800;
+  }
+
+  /* Scrollbars: thin and theme-aware instead of the default heavy chrome. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.slate.400') transparent;
+  }
+
+  html.dark * {
+    scrollbar-color: theme('colors.slate.600') transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-300 dark:bg-slate-700;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-400 dark:bg-slate-600;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900;
+  }
+
+  .card-muted {
+    @apply rounded-xl border border-slate-200 bg-slate-100/60 dark:border-slate-800 dark:bg-slate-900/60;
+  }
+
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2 text-sm font-medium leading-5 transition-colors;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-brand-600 text-white shadow-sm hover:bg-brand-700 active:bg-brand-800;
+    @apply disabled:hover:bg-brand-600;
+  }
+
+  .btn-ghost {
+    @apply border-slate-300 bg-white text-slate-700 hover:bg-slate-100;
+    @apply dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 active:bg-red-800;
+  }
+
+  /* Spelled out rather than `@apply btn btn-ghost` so the square icon button does
+     not depend on the resolution order of the other component classes. */
+  .btn-icon {
+    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border p-0 transition-colors;
+    @apply border-slate-300 bg-white text-slate-700 hover:bg-slate-100;
+    @apply dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm;
+    @apply placeholder:text-slate-400;
+    @apply dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500;
+    @apply disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .label {
+    @apply block text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

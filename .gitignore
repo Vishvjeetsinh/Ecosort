@@ -1,0 +1,59 @@
+# ---- Node ----
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.npm/
+
+# ---- Build output ----
+dist/
+build/
+.vite/
+coverage/
+
+# ---- Environment ----
+.env
+.env.local
+.env.*.local
+
+# ---- SQLite ----
+*.db
+*.db-wal
+*.db-shm
+backend/data/
+
+# ---- Models (downloaded or trained, never committed) ----
+# models/README.md and models/.gitkeep stay tracked - see the negations below.
+models/*
+!models/README.md
+!models/.gitkeep
+models/mobilenet_v2/
+models/custom/
+
+# ---- Raw downloaded datasets ----
+# Multi-GB, separately licensed, and reproducible from ml/README.md's download list.
+# ml/.gitignore already covers the images under ml/source/ while keeping the scaffolded
+# per-class READMEs tracked; these are the unpacked archives they are ingested from.
+/custom-waste-classification-dataset/*
+/datasets/
+/*-dataset/
+/*-dataset-*/
+
+# ---- Python / training ----
+ml/.venv/
+ml/venv/
+ml/dataset/
+ml/artifacts/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# ---- Editors / OS ----
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Distribution archives built by hand.
+ecosort*.zip

@@ -1,0 +1,36 @@
+{
+  "name": "ecosort-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "EcoSort — offline waste-image classifier UI (React + Vite + Tailwind + TensorFlow.js)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . --ext .js,.jsx"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "4.22.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "jsdom": "^25.0.1",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  }
+}

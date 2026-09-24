@@ -1,0 +1,41 @@
+{
+  "name": "ecosort-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "EcoSort API: waste classification history, recycling rules and offline TFJS model hosting.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "node --test \"tests/**/*.test.js\"",
+    "test:watch": "node --test --watch \"tests/**/*.test.js\"",
+    "fetch-models": "node ../scripts/fetch-mobilenet.mjs",
+    "db:reset": "node -e \"import('file://' + process.cwd() + '/src/db.js').then((m) => { m.resetDb(); m.closeDb(); console.log('ecosort: database reset'); }).catch((err) => { console.error(err); process.exit(1); })\""
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "js,json",
+    "ignore": [
+      "data/*"
+    ]
+  }
+}
