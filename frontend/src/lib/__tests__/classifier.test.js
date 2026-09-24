@@ -36,7 +36,10 @@ const {
   LOW_CONFIDENCE_THRESHOLD,
   aggregateCustomPredictions,
   aggregateImagenetPredictions,
+  clampRegion,
+  cropBoxFor,
   deriveCustomClasses,
+  regionBatchSize,
   resolveWasteCategory,
 } = await import('../classifier.js');
 const { buildIndexMap } = await import('../imagenetWasteMap.js');
@@ -353,5 +356,75 @@ describe('deriveCustomClasses', () => {
 
   it('refuses a non-standard output width too', () => {
     expect(() => deriveCustomClasses({}, 4)).toThrow(/outputs 4 classes/);
+  });
+});
+
+describe('clampRegion', () => {
+  it('leaves a region that fits untouched', () => {
+    expect(clampRegion({ x: 10, y: 20, width: 30, height: 40 }, 100, 100)).toEqual({
+      x: 10,
+      y: 20,
+      width: 30,
+      height: 40,
+    });
+  });
+
+  it('trims a region overhanging the frame so tf.slice cannot throw', () => {
+    // Frame is 48 high, 64 wide.
+    expect(clampRegion({ x: 50, y: 40, width: 30, height: 30 }, 48, 64)).toEqual({
+      x: 50,
+      y: 40,
+      width: 14,
+      height: 8,
+    });
+    expect(clampRegion({ x: -5, y: -5, width: 10, height: 10 }, 48, 64)).toEqual({
+      x: 0,
+      y: 0,
+      width: 10,
+      height: 10,
+    });
+  });
+
+  it('never produces an empty slice, even from garbage', () => {
+    for (const region of [null, {}, { x: 999, y: 999, width: 0, height: -3 }, { x: 'a', width: NaN }]) {
+      const r = clampRegion(region, 48, 64);
+      expect(r.width).toBeGreaterThanOrEqual(1);
+      expect(r.height).toBeGreaterThanOrEqual(1);
+      expect(r.x + r.width).toBeLessThanOrEqual(64);
+      expect(r.y + r.height).toBeLessThanOrEqual(48);
+    }
+  });
+});
+
+describe('regionBatchSize', () => {
+  it('pads the batch up to a small fixed set of sizes', () => {
+    expect([1, 2, 3, 4, 5, 6].map(regionBatchSize)).toEqual([1, 2, 4, 4, 6, 6]);
+  });
+
+  it('runs an unusually large batch as it is rather than truncating it', () => {
+    expect(regionBatchSize(9)).toBe(9);
+  });
+});
+
+describe('cropBoxFor', () => {
+  it('maps the first and last pixel of the region onto the box edges', () => {
+    // 101 x 201 frame: pixel p sits at p / 100 vertically and p / 200 horizontally.
+    const [y1, x1, y2, x2] = cropBoxFor({ x: 20, y: 10, width: 41, height: 31 }, 101, 201);
+    expect(y1).toBeCloseTo(0.1);
+    expect(x1).toBeCloseTo(0.1);
+    expect(y2).toBeCloseTo(0.4);
+    expect(x2).toBeCloseTo(0.3);
+  });
+
+  it('covers the whole frame for a full-frame region', () => {
+    expect(cropBoxFor({ x: 0, y: 0, width: 640, height: 480 }, 480, 640)).toEqual([0, 0, 1, 1]);
+  });
+
+  it('clamps an overhanging region first', () => {
+    const [y1, x1, y2, x2] = cropBoxFor({ x: 600, y: -20, width: 100, height: 100 }, 480, 640);
+    expect(y1).toBe(0);
+    expect(x2).toBe(1);
+    expect(x1).toBeGreaterThan(0.9);
+    expect(y2).toBeLessThan(1);
   });
 });

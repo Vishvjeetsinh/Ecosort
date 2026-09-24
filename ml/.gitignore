@@ -13,6 +13,9 @@ __pycache__/
 # Prepared dataset (built by prepare_dataset.py from source/)
 dataset/
 
+# Public dataset archives and their extracted copies (fetched by build_dataset.py)
+downloads/
+
 # Checkpoints, plots, logs, reports, TensorBoard runs
 artifacts/
 

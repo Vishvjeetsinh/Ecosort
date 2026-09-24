@@ -160,6 +160,20 @@ SOURCE_MAPS = {
         # Override with --map if your deployment sees automotive waste.
         "automobile wastes": None,
     },
+    # UCI RealWaste (CC BY 4.0, doi:10.24432/C5SS4G): 4,752 photos of real items on a
+    # landfill conveyor, 524x524. The only openly licensed source of `textile`, and with
+    # TrashNet it fills all three classes customwaste lacks. ml/build_dataset.py downloads it.
+    "realwaste": {
+        "Cardboard": "cardboard",
+        "Food Organics": "organic",
+        "Glass": "glass",
+        "Metal": "metal",
+        "Miscellaneous Trash": "trash",
+        "Paper": "paper",
+        "Plastic": "plastic",
+        "Textile Trash": "textile",
+        "Vegetation": "organic",
+    },
 }
 
 
@@ -361,9 +375,40 @@ def ingest(args) -> int:
     if not pooled:
         raise SystemExit("error: nothing to ingest. Run with --inspect <dir> to see why.")
 
+    if args.replace:
+        # Only files this script wrote for the sources named now: `<source>__...`. Your own
+        # photos, and other sources' files, are never touched.
+        prefixes = tuple(f"{name}__" for name, _root in sources)
+        removed = 0
+        for cls in CANONICAL_CLASSES:
+            class_dir = out / cls
+            if not class_dir.is_dir():
+                continue
+            for path in class_dir.iterdir():
+                if path.is_file() and path.name.startswith(prefixes):
+                    if not args.dry_run:
+                        path.unlink()
+                    removed += 1
+        print(f"--replace: {'would remove' if args.dry_run else 'removed'} {removed} previously ingested file(s)\n")
+
     seen = set()
     if not args.no_dedup:
         print("Hashing for duplicates ...")
+        # Whatever already sits in the destination counts too, so re-running an ingest, or
+        # adding a source that re-packages one ingested earlier, cannot plant a second copy.
+        for cls in CANONICAL_CLASSES:
+            class_dir = out / cls
+            if not class_dir.is_dir():
+                continue
+            for path in class_dir.iterdir():
+                if not is_image_path(path):
+                    continue
+                if args.replace and args.dry_run and path.name.startswith(prefixes):
+                    continue  # would have been removed above
+                try:
+                    seen.add(file_digest(path))
+                except OSError as exc:
+                    print(f"  WARNING could not read {path}: {exc}")
 
     tally = Counter()
     per_source = defaultdict(Counter)
@@ -490,6 +535,14 @@ def parse_args(argv=None):
     parser.add_argument("--seed", type=int, default=42, help="sampling seed (default: 42)")
     parser.add_argument("--link", action="store_true", help="hardlink instead of copying")
     parser.add_argument("--dry-run", action="store_true", help="report the plan, write nothing")
+    parser.add_argument(
+        "--replace",
+        action="store_true",
+        help=(
+            "first delete the files earlier runs ingested from the sources named now "
+            "(<name>__* in each class folder), so a re-run with a new --cap starts clean"
+        ),
+    )
     parser.add_argument(
         "--no-dedup",
         action="store_true",

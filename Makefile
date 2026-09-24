@@ -27,6 +27,15 @@ EVAL_ARGS    ?= --split test
 # INGEST_ARGS="--source name=dir ..."` merges them into ml/source.
 DIR          ?=
 INGEST_ARGS  ?=
+# `make dataset` - e.g. DATASET_ARGS="--cap 2000 --garbage12 ~/Downloads/garbage_classification".
+DATASET_ARGS ?=
+# The recommended NVIDIA recipe (ml/README.md, "Training on an NVIDIA GPU"). TRAIN_ARGS is
+# appended after it and argparse keeps the last value, so `make train-gpu TRAIN_ARGS="--backbone
+# efficientnetv2b2"` swaps one setting without restating the rest. GPU_PRECISION= turns mixed
+# precision off for cards without tensor cores (pre-2017, compute capability < 7.0).
+GPU_PRECISION  ?= --mixed-precision
+GPU_TRAIN_ARGS ?= --backbone efficientnetv2b0 --batch-size 64 --epochs 8 --fine-tune-epochs 30 \
+                  --mixup 0.2 --cutmix 1.0 --mix-prob 0.3 --quantize float16
 
 # `make convert-model ARCH=InceptionV3` converts one pretrained keras.applications
 # classifier; `make list-models` prints the ones that are supported. float16 is the
@@ -40,7 +49,7 @@ CONVERT_ARGS ?=
 	prod-up prod-down shell-backend shell-frontend \
 	dev-backend dev-frontend test test-backend test-frontend lint \
 	clean db-reset venv train train-smoke inspect-data ingest-data prepare-data evaluate doctor \
-	convert-model list-models
+	convert-model list-models dataset venv-gpu gpu-check train-gpu
 
 ##@ General
 
@@ -85,13 +94,20 @@ doctor: ## Print tool versions and report which models are installed
 	@if [ ! -f models/mobilenet_v2/model.json ]; then \
 	   echo "models/mobilenet_v2 : MISSING  -> run 'make fetch-models'"; \
 	 fi
+	@if [ -f models/detectors/ssdlite_mobilenet_v2/model.json ]; then \
+	   printf "%-20s: present (%s, %s)\n" "models/detectors" "Live scan object detector" \
+	     "`du -sh models/detectors/ssdlite_mobilenet_v2 2>/dev/null | cut -f1`"; \
+	 else \
+	   echo "models/detectors    : MISSING  -> run 'make fetch-models' (needed by Live scan)"; \
+	 fi
 
 install: ## Install backend + frontend npm dependencies on the host
 	@cd backend  && if [ -f package-lock.json ]; then npm ci; else npm install; fi
 	@cd frontend && if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
-fetch-models: ## Download the pretrained MobileNetV2 fallback model into ./models
+fetch-models: ## Download the pretrained MobileNetV2 fallback and the Live scan object detector into ./models
 	node scripts/fetch-mobilenet.mjs
+	node scripts/fetch-detector.mjs
 
 ##@ Docker (development stack)
 
@@ -188,6 +204,25 @@ ingest-data: venv ## Merge downloaded datasets into ml/source (make ingest-data 
 
 prepare-data: venv ## Download/organise the training dataset into ml/dataset
 	$(PY) ml/prepare_dataset.py $(PREPARE_ARGS)
+
+dataset: venv ## Download RealWaste + TrashNet and rebuild ml/source and ml/dataset for all 10 classes
+	$(PY) ml/build_dataset.py $(DATASET_ARGS)
+
+# Linux and WSL2 only: TensorFlow has no CUDA build for native Windows or macOS. The pip
+# `and-cuda` extra brings CUDA and cuDNN along, so no system CUDA toolkit is needed - only
+# the NVIDIA driver. Pinned to the TensorFlow already in the venv, so nothing else moves.
+venv-gpu: venv ## Add NVIDIA CUDA support to ml/.venv (Linux / WSL2; needs the NVIDIA driver)
+	@if [ "$$(uname -s)" != "Linux" ]; then \
+	   echo "venv-gpu: CUDA TensorFlow needs Linux or WSL2 - see ml/README.md"; exit 1; fi
+	$(PY) -m pip install "tensorflow[and-cuda]==$$($(PY) -m pip show tensorflow | sed -n 's/^Version: //p')"
+	$(PY) ml/gpu_check.py
+
+gpu-check: venv ## Show whether TensorFlow can see and use an NVIDIA GPU, and why not
+	$(PY) ml/gpu_check.py
+
+train-gpu: venv ## Train the recommended EfficientNetV2-B0 recipe on an NVIDIA GPU
+	$(PY) ml/gpu_check.py --require --quiet
+	$(PY) ml/train.py $(GPU_TRAIN_ARGS) $(GPU_PRECISION) $(TRAIN_ARGS)
 
 train: venv ## Train the custom classifier and export it to models/custom
 	$(PY) ml/train.py $(TRAIN_ARGS)

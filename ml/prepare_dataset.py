@@ -38,7 +38,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 try:
-    from PIL import Image, ImageFile
+    from PIL import Image, ImageFile, ImageOps
 except ImportError as exc:  # pragma: no cover - environment problem, not a code path
     sys.stderr.write(
         "error: Pillow is not installed.\n"
@@ -235,6 +235,15 @@ def parse_args(argv=None):
         help="Delete an existing <out>/{train,val,test} before writing (otherwise they are merged into)",
     )
     parser.add_argument(
+        "--max-side",
+        type=int,
+        default=None,
+        help=(
+            "Re-encode every image as a JPEG no larger than this many pixels on its long side, "
+            "with its EXIF orientation applied, instead of copying it byte for byte"
+        ),
+    )
+    parser.add_argument(
         "--scaffold",
         action="store_true",
         help="Create empty <source>/<class>/ folders with a README for all 10 categories, then exit",
@@ -309,6 +318,25 @@ def validate_image(path: Path):
     if width < 16 or height < 16:
         return False, f"too small ({width}x{height})"
     return True, None
+
+
+def write_resized(src: Path, dest: Path, max_side: int) -> None:
+    """Re-encode `src` as an upright JPEG of at most `max_side` px on its long side.
+
+    Two reasons, both about what the model sees rather than about disk space:
+      * Keras decodes JPEGs without applying EXIF orientation, while the browser's
+        createImageBitmap(..., {imageOrientation: 'from-image'}) does - so a phone photo
+        stored sideways would be trained on sideways and served upright. Baking the
+        rotation in here makes both sides see the same picture.
+      * A 4032x3024 phone photo costs ~40x the decode time of a 512 px one, every time the
+        input pipeline reads it. On a GPU that decode, not the model, becomes the bottleneck.
+    Training resizes to 224-300 px anyway, so 512 px keeps every pixel that matters.
+    """
+    with Image.open(src) as img:
+        img = ImageOps.exif_transpose(img).convert("RGB")
+        if max(img.size) > max_side:
+            img.thumbnail((max_side, max_side), Image.Resampling.LANCZOS)
+        img.save(dest, "JPEG", quality=92, optimize=True)
 
 
 def split_counts(n: int, val_split: float, test_split: float):
@@ -450,6 +478,8 @@ def main(argv=None) -> int:
             f"error: --val-split + --test-split = {args.val_split + args.test_split:.2f} "
             "leaves almost nothing to train on (max 0.9)."
         )
+    if args.max_side is not None and args.max_side < 64:
+        raise SystemExit("error: --max-side must be at least 64 (training resizes to 224+).")
     if out == source:
         raise SystemExit("error: --out must differ from --source.")
     try:
@@ -460,7 +490,11 @@ def main(argv=None) -> int:
 
     print(f"source : {source}")
     print(f"out    : {out}")
-    print(f"mode   : {'move' if args.move else 'copy'}{'  (dry run)' if args.dry_run else ''}")
+    print(
+        f"mode   : {'move' if args.move else 'copy'}"
+        f"{f', re-encoded to <= {args.max_side} px' if args.max_side else ''}"
+        f"{'  (dry run)' if args.dry_run else ''}"
+    )
     print(f"split  : train {1 - args.val_split - args.test_split:.2f} / val {args.val_split:.2f} / test {args.test_split:.2f}   seed {args.seed}")
 
     class_names, files_by_class, skipped = scan_classes(source, args.allow_extra_classes)
@@ -508,18 +542,22 @@ def main(argv=None) -> int:
             target_dir = out / split / cls
             target_dir.mkdir(parents=True, exist_ok=True)
             for src_path in plan[cls][split]:
-                dest = target_dir / src_path.name
+                suffix = ".jpg" if args.max_side else src_path.suffix
+                dest = target_dir / f"{src_path.stem}{suffix}"
                 # Sub-folders inside a class dir can produce duplicate basenames; de-duplicate
                 # deterministically rather than silently overwriting one with the other.
                 if dest.exists():
-                    stem, suffix = src_path.stem, src_path.suffix
                     counter = 1
                     while dest.exists():
-                        dest = target_dir / f"{stem}__{counter}{suffix}"
+                        dest = target_dir / f"{src_path.stem}__{counter}{suffix}"
                         counter += 1
                     collisions += 1
                 try:
-                    if args.move:
+                    if args.max_side:
+                        write_resized(src_path, dest, args.max_side)
+                        if args.move:
+                            src_path.unlink()
+                    elif args.move:
                         shutil.move(str(src_path), str(dest))
                     else:
                         shutil.copy2(src_path, dest)
@@ -535,6 +573,7 @@ def main(argv=None) -> int:
         "seed": args.seed,
         "source": str(source),
         "mode": "move" if args.move else "copy",
+        "maxSide": args.max_side,
         "valSplit": args.val_split,
         "testSplit": args.test_split,
         # The single source of truth for label order. train.py reads this back.

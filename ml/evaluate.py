@@ -69,6 +69,8 @@ DEFAULT_MODEL_CANDIDATES = (
     REPO_ROOT / "ml" / "artifacts" / "ecosort_mobilenetv2.keras",
     REPO_ROOT / "ml" / "artifacts" / "checkpoints" / "best.keras",
 )
+# train.py names the saved model after its backbone and records the path here.
+LAST_RUN_SUMMARY = REPO_ROOT / "ml" / "artifacts" / "summary.json"
 CLASS_SOURCE_CANDIDATES = (
     REPO_ROOT / "models" / "custom" / "metadata.json",
     REPO_ROOT / "ml" / "dataset" / "dataset.json",
@@ -97,8 +99,8 @@ def parse_args(argv=None):
     parser.add_argument(
         "--model",
         default=None,
-        help="Trained .keras/.h5 model (default: ml/artifacts/ecosort_mobilenetv2.keras, "
-        "then ml/artifacts/checkpoints/best.keras)",
+        help="Trained .keras/.h5 model (default: the one ml/artifacts/summary.json names, then "
+        "ml/artifacts/ecosort_mobilenetv2.keras, then ml/artifacts/checkpoints/best.keras)",
     )
     parser.add_argument("--data-dir", default=None, help="Dataset root (default: ml/dataset)")
     parser.add_argument(
@@ -142,7 +144,16 @@ def resolve_model_path(value):
         if not path.exists():
             raise SystemExit(f"error: model not found: {path}")
         return path
-    for candidate in DEFAULT_MODEL_CANDIDATES:
+    candidates = list(DEFAULT_MODEL_CANDIDATES)
+    try:
+        summary = json.loads(LAST_RUN_SUMMARY.read_text(encoding="utf-8"))
+        recorded = summary.get("kerasModel")
+        # A --smoke-test run was trained on random noise; never evaluate that by default.
+        if isinstance(recorded, str) and recorded and not summary.get("smokeTest"):
+            candidates.insert(0, Path(recorded))
+    except (OSError, ValueError):
+        pass  # no previous run, or an unreadable summary: fall back to the fixed names
+    for candidate in candidates:
         if candidate.exists():
             return candidate
     raise SystemExit(

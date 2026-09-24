@@ -239,3 +239,50 @@ export function downscaleToDataUrl(
   ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
   return canvasToDataUrl(canvas, { type, quality });
 }
+
+/**
+ * Aspect-preserving copy of a frame, for Live scan's still scans. Unlike canvasFromSource
+ * nothing is cropped - the detector needs the whole picture - and the copy is a real
+ * snapshot, so freezing a <video> keeps the exact pixels the boxes were found in.
+ *
+ * @param {HTMLImageElement|HTMLVideoElement|HTMLCanvasElement|ImageBitmap} source
+ * @param {{maxSide?: number}} [options]
+ * @returns {HTMLCanvasElement}
+ */
+export function snapshotCanvas(source, { maxSide = 1280 } = {}) {
+  if (!Number.isFinite(maxSide) || maxSide <= 0) {
+    throw new RangeError(`snapshotCanvas: maxSide must be positive, got ${maxSide}`);
+  }
+
+  const { width, height } = getSourceSize(source);
+  const scale = Math.min(1, maxSide / Math.max(width, height));
+  const { canvas, ctx } = createCanvas(width * scale, height * scale);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+  return canvas;
+}
+
+/**
+ * One pixel region of a canvas as a small JPEG data URL - the history thumbnail of a
+ * single item found by Live scan.
+ *
+ * @param {HTMLCanvasElement} canvas
+ * @param {{x: number, y: number, width: number, height: number}} region pixels
+ * @param {{maxSide?: number, type?: string, quality?: number}} [options]
+ * @returns {string} data URL
+ */
+export function cropToDataUrl(
+  canvas,
+  region,
+  { maxSide = 320, type = 'image/jpeg', quality = 0.75 } = {},
+) {
+  const width = Math.max(1, Math.round(region.width));
+  const height = Math.max(1, Math.round(region.height));
+  const scale = Math.min(1, maxSide / Math.max(width, height));
+  const { canvas: out, ctx } = createCanvas(width * scale, height * scale);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(canvas, region.x, region.y, width, height, 0, 0, out.width, out.height);
+  return canvasToDataUrl(out, { type, quality });
+}

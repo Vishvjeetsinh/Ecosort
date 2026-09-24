@@ -18,11 +18,13 @@ The exported graph MUST accept pixels in [0, 1], because
 `frontend/src/lib/classifier.js` has exactly one preprocessing path for both engines:
 `tf.browser.fromPixels(...).resizeBilinear(...).toFloat().div(255)` and nothing else.
 
-That works only because the model itself starts with
-`tf.keras.layers.Rescaling(scale=2.0, offset=-1.0)`, which maps [0, 1] -> [-1, 1] inside
-the graph - the range MobileNetV2 was trained on. This module refuses to export a model
-whose input range looks wrong, so a regression in train.py is caught here rather than
-three weeks later when the browser quietly misclassifies everything.
+That works only because the model itself starts with a `Rescaling` layer that maps
+[0, 1] onto whatever its backbone was pretrained on: `Rescaling(2.0, -1.0)` -> [-1, 1] for
+MobileNetV2, `Rescaling(255.0, 0.0)` -> [0, 255] for EfficientNetV2, whose Keras
+applications normalise from there themselves (ml/train.py BACKBONES). This module
+refuses to export a model whose first Rescaling is not the one its backbone needs, so a
+regression in train.py is caught here rather than three weeks later when the browser
+quietly misclassifies everything.
 """
 
 from __future__ import annotations
@@ -41,7 +43,18 @@ HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parent
 
 METADATA_VERSION = "1.0.0"
-MODEL_NAME = "ecosort-mobilenetv2"
+
+# The Rescaling MobileNetV2 needs - the default, so an old checkpoint re-exported by hand is
+# still checked against the contract it was trained under.
+DEFAULT_INPUT_RESCALE = (2.0, -1.0)
+
+# tensorflowjs_converter flags per weight quantization. float16 halves the download with no
+# measurable accuracy change for these classifiers; uint8 quarters it at a small cost.
+QUANTIZATION_FLAGS = {
+    "none": [],
+    "float16": ["--quantize_float16", "*"],
+    "uint8": ["--quantize_uint8", "*"],
+}
 
 # Only these may be deleted when cleaning the target directory. Anything else in there is
 # the user's and we refuse to touch it - `--out` pointed at the wrong place is a very
@@ -51,10 +64,10 @@ DELETABLE_PREFIXES = ("group",)
 DELETABLE_SUFFIXES = (".bin",)
 
 _NOTES_TEMPLATE = (
-    "Custom EcoSort classifier: MobileNetV2 transfer learning exported from ml/train.py. "
+    "Custom EcoSort classifier: {base} transfer learning exported from ml/train.py. "
     "{loader} Feed pixels scaled to [0,1] and nothing else: the graph's first layer is "
-    "Rescaling(scale=2.0, offset=-1.0), which converts [0,1] to the [-1,1] range "
-    "MobileNetV2 expects, so applying the Keras x/127.5-1 transform yourself would "
+    "Rescaling(scale={scale:g}, offset={offset:g}), which converts [0,1] to the input range "
+    "{base} was pretrained on, so applying any Keras preprocess_input yourself would "
     "double-apply it. The output is a softmax over classes[] in that exact order; there "
     "is no background class, hence classOffset 0."
 )
@@ -65,13 +78,21 @@ _LOADERS = {
 }
 
 
-def metadata_notes(model_format: str) -> str:
+def metadata_notes(model_format: str, base_model: str = "MobileNetV2",
+                   input_rescale=DEFAULT_INPUT_RESCALE) -> str:
     """The notes string, matched to whichever TFJS format the converter actually produced."""
     loader = _LOADERS.get(
         model_format,
         "Load with tf.loadGraphModel unless model.json says format 'layers-model'.",
     )
-    return _NOTES_TEMPLATE.format(loader=loader)
+    scale, offset = input_rescale
+    return _NOTES_TEMPLATE.format(loader=loader, base=base_model, scale=scale, offset=offset)
+
+
+def model_name_for(base_model: str) -> str:
+    """"EfficientNetV2-B0" -> "ecosort-efficientnetv2b0"; MobileNetV2 keeps its old name."""
+    slug = "".join(ch for ch in base_model.lower() if ch.isalnum())
+    return f"ecosort-{slug or 'custom'}"
 
 
 def read_model_format(out_dir: Path) -> str:
@@ -140,7 +161,7 @@ def _reset_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
-def _convert_via_saved_model(model, out_dir: Path) -> str:
+def _convert_via_saved_model(model, out_dir: Path, quantize: str = "none") -> str:
     """Primary route: Keras model -> TF SavedModel -> TFJS *graph* model.
 
     Keras 3 (the default from TensorFlow 2.16 on) writes `batch_shape` into its
@@ -173,6 +194,7 @@ def _convert_via_saved_model(model, out_dir: Path) -> str:
                 "--output_format=tfjs_graph_model",
                 "--signature_name=serving_default",
                 "--saved_model_tags=serve",
+                *QUANTIZATION_FLAGS[quantize],
                 str(sm_dir),
                 str(out_dir),
             ]
@@ -246,7 +268,7 @@ def _convert_with_cli(model, out_dir: Path) -> str:
         raise ExportError("; ".join(failures))
 
 
-def convert_model(model, out_dir: Path) -> str:
+def convert_model(model, out_dir: Path, quantize: str = "none") -> str:
     """Convert a Keras model into out_dir. Returns a description of the route taken.
 
     Route order matters. The SavedModel -> graph-model route goes first because it is the
@@ -258,7 +280,7 @@ def convert_model(model, out_dir: Path) -> str:
 
     _reset_dir(out_dir)
     try:
-        return _convert_via_saved_model(model, out_dir)
+        return _convert_via_saved_model(model, out_dir, quantize)
     except ExportError as exc:
         problems.append(f"SavedModel -> graph-model: {exc}")
     except ImportError as exc:
@@ -270,6 +292,13 @@ def convert_model(model, out_dir: Path) -> str:
         problems.append(f"SavedModel -> graph-model: {type(exc).__name__}: {exc}")
 
     print(f"  graph-model route unavailable: {problems[-1]}")
+    if quantize != "none":
+        # The layers routes below exist for old Keras 2 stacks; none of them is wired for
+        # quantization, and silently shipping a full-size model would be worse than stopping.
+        raise ExportError(
+            f"the SavedModel route failed and --quantize {quantize} is only supported on it:\n  "
+            + problems[-1]
+        )
     print("  falling back to the Keras layers routes ...")
 
     _reset_dir(out_dir)
@@ -333,8 +362,12 @@ def assert_browser_loadable(out_dir: Path, model_format: str) -> None:
             )
 
 
-def check_input_range(model) -> None:
-    """Assert the [0,1]-input contract by finding the Rescaling layer inside the model."""
+def check_input_range(model, expected=DEFAULT_INPUT_RESCALE) -> None:
+    """Assert the [0,1]-input contract by finding the first Rescaling layer in the model.
+
+    `expected` is the (scale, offset) the backbone needs: (2, -1) for MobileNetV2's [-1,1],
+    (255, 0) for the backbones whose Keras application normalises [0,255] itself.
+    """
 
     def walk(layers):
         for layer in layers:
@@ -344,20 +377,22 @@ def check_input_range(model) -> None:
                 yield from walk(inner)
 
     rescalers = [l for l in walk(model.layers) if type(l).__name__ == "Rescaling"]
+    want_scale, want_offset = (float(v) for v in expected)
     if not rescalers:
         raise ExportError(
             "the model has no Rescaling layer, so it cannot be taking [0,1] input. "
-            "docs/ARCHITECTURE.md section 2.2 requires Rescaling(scale=2.0, offset=-1.0) "
-            "as the first layer after the Input."
+            f"docs/ARCHITECTURE.md section 2.2 requires Rescaling(scale={want_scale:g}, "
+            f"offset={want_offset:g}) as the first layer after the Input for this backbone."
         )
     first = rescalers[0]
     scale = float(getattr(first, "scale", 0.0))
     offset = float(getattr(first, "offset", 0.0))
-    if abs(scale - 2.0) > 1e-6 or abs(offset + 1.0) > 1e-6:
+    if abs(scale - want_scale) > 1e-6 or abs(offset - want_offset) > 1e-6:
         raise ExportError(
             f"Rescaling layer '{first.name}' has scale={scale}, offset={offset}; the browser "
-            "contract requires scale=2.0, offset=-1.0 so that [0,1] input maps to [-1,1]. "
-            f"scale={1/127.5:.6f} would mean the model expects [0,255] - see "
+            f"contract for this backbone requires scale={want_scale:g}, offset={want_offset:g} "
+            "so that [0,1] input lands in the range its ImageNet weights expect. "
+            f"scale={1/127.5:.6f} would mean the model expects [0,255] from the caller - see "
             "docs/ARCHITECTURE.md section 2.2."
         )
 
@@ -370,11 +405,18 @@ def write_metadata(
     image_size: int = 224,
     epochs=None,
     model_format: str = "graph-model",
+    input_rescale=DEFAULT_INPUT_RESCALE,
+    quantize: str = "none",
+    download_bytes=None,
 ) -> Path:
     """Write out_dir/metadata.json in the exact shape of ARCHITECTURE section 2.3."""
     classes = list(class_names)
     metadata = {
-        "name": MODEL_NAME,
+        "name": model_name_for(base_model),
+        # What the model picker shows (ARCHITECTURE 2.4); naming the backbone is what tells
+        # two custom models apart when both are installed.
+        "displayName": f"Custom model ({base_model})",
+        "description": f"Trained on your own dataset; predicts {len(classes)} waste categories directly.",
         "version": METADATA_VERSION,
         "createdAt": datetime.now(timezone.utc)
         .isoformat(timespec="milliseconds")
@@ -388,8 +430,11 @@ def write_metadata(
         "classes": classes,
         "classCount": len(classes),
         "metrics": dict(metrics) if metrics else None,
-        "notes": metadata_notes(model_format),
+        "quantization": quantize,
+        "notes": metadata_notes(model_format, base_model, input_rescale),
     }
+    if download_bytes:
+        metadata["downloadBytes"] = int(download_bytes)
     if epochs is not None:
         metadata["epochs"] = int(epochs)
 
@@ -456,6 +501,8 @@ def export_to_tfjs(
     base_model: str = "MobileNetV2",
     image_size: int = 224,
     epochs=None,
+    input_rescale=DEFAULT_INPUT_RESCALE,
+    quantize: str = "none",
 ) -> dict:
     """Convert `model` to TFJS in `out_dir` and write metadata.json next to it.
 
@@ -474,9 +521,11 @@ def export_to_tfjs(
             "given. metadata.json.classes must line up index-for-index with the softmax."
         )
 
-    check_input_range(model)
+    if quantize not in QUANTIZATION_FLAGS:
+        raise ExportError(f"unknown quantization '{quantize}'; pick one of {', '.join(QUANTIZATION_FLAGS)}")
+    check_input_range(model, input_rescale)
 
-    print(f"\nExporting to TensorFlow.js -> {out_dir}")
+    print(f"\nExporting to TensorFlow.js -> {out_dir} (weights: {quantize})")
     existing = inspect_output_dir(out_dir)
 
     # Build into a sibling staging directory and swap on success, so a converter failure
@@ -486,7 +535,7 @@ def export_to_tfjs(
     try:
         staging.mkdir(parents=True)
 
-        route = convert_model(model, staging)
+        route = convert_model(model, staging, quantize)
         print(f"  converted via {route}")
 
         # The format the converter actually chose drives both the loadability check and
@@ -494,6 +543,8 @@ def export_to_tfjs(
         model_format = read_model_format(staging)
         assert_browser_loadable(staging, model_format)
 
+        # Verified before metadata.json is written, so it can state the real download size.
+        info = verify_export(staging)
         write_metadata(
             staging,
             classes,
@@ -502,8 +553,10 @@ def export_to_tfjs(
             image_size=image_size,
             epochs=epochs,
             model_format=model_format,
+            input_rescale=input_rescale,
+            quantize=quantize,
+            download_bytes=info["totalBytes"],
         )
-        info = verify_export(staging)
         print(
             f"  verified: {len(info['shards'])} weight shard(s), "
             f"{human_bytes(info['totalBytes'])} total, format={info['format']}"
@@ -586,6 +639,20 @@ def main(argv=None) -> int:
     parser.add_argument("--image-size", type=int, default=224, help="Square input side length")
     parser.add_argument("--base-model", default="MobileNetV2", help="Value for metadata.baseModel")
     parser.add_argument(
+        "--input-rescale",
+        default="2,-1",
+        help=(
+            "scale,offset of the model's first Rescaling layer, checked before export: "
+            "2,-1 for MobileNetV2; 255,0 for EfficientNetV2"
+        ),
+    )
+    parser.add_argument(
+        "--quantize",
+        choices=sorted(QUANTIZATION_FLAGS),
+        default="none",
+        help="Weight quantization; float16 halves the browser download",
+    )
+    parser.add_argument(
         "--val-accuracy", type=float, default=None, help="Value for metadata.metrics.valAccuracy"
     )
     parser.add_argument(
@@ -601,6 +668,10 @@ def main(argv=None) -> int:
         Path(args.out).expanduser().resolve() if args.out else REPO_ROOT / "models" / "custom"
     )
     class_names = _load_classes(args)
+    try:
+        scale, offset = (float(part) for part in args.input_rescale.split(","))
+    except ValueError as exc:
+        raise SystemExit(f"error: --input-rescale expects scale,offset such as 2,-1 (got {args.input_rescale!r})") from exc
 
     # Quieten TF's C++ logger before it is imported, purely for readable output.
     os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
@@ -634,6 +705,8 @@ def main(argv=None) -> int:
             metrics=metrics,
             base_model=args.base_model,
             image_size=args.image_size,
+            input_rescale=(scale, offset),
+            quantize=args.quantize,
         )
     except ExportError as exc:
         raise SystemExit(f"error: {exc}") from exc

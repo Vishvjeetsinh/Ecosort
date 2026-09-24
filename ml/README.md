@@ -13,6 +13,10 @@ frontend prefers it and the model badge flips from `fallback` to `custom`. It al
 Everything here runs **on the host**, not in Docker. None of it is needed for
 `docker compose up --build`.
 
+**Want a more accurate model?** Jump to
+[Better accuracy on an NVIDIA GPU](#better-accuracy-on-an-nvidia-gpu) — three commands on a
+machine with an NVIDIA card.
+
 ---
 
 ## The one rule
@@ -23,25 +27,26 @@ Everything here runs **on the host**, not in Docker. None of it is needed for
 engine: resize to the model's `inputSize` (224 here, 299 for the Inception family),
 `toFloat()`, `div(255)`. Nothing else.
 
-That is only correct because `train.py` puts
+That is only correct because `train.py` puts a `Rescaling` layer first after the `Input`,
+**inside the exported graph**, that maps `[0,1]` onto what the backbone was pretrained on:
 
-```python
-tf.keras.layers.Rescaling(scale=2.0, offset=-1.0)
-```
+| backbone | first layer | maps `[0,1]` to |
+|---|---|---|
+| MobileNetV2 | `Rescaling(scale=2.0, offset=-1.0)` | `[-1,1]` |
+| EfficientNetV2-B0 … B3 | `Rescaling(scale=255.0, offset=0.0)` | `[0,255]`, which the Keras application then normalises itself |
 
-as the first layer after the `Input`, **inside the exported graph**. It converts
-`[0,1] → [-1,1]`, the range MobileNetV2 was pretrained on, and mirrors the
-`hub_input/Mul(2.0)` + `hub_input/Sub(1.0)` pair baked into the pretrained fallback graph
-(`docs/ARCHITECTURE.md` §2.1). `convert_pretrained.py` inserts the identical layer in front
-of every architecture it converts, which is why the rule holds for those models too.
+MobileNetV2's mirrors the `hub_input/Mul(2.0)` + `hub_input/Sub(1.0)` pair baked into the
+pretrained fallback graph (`docs/ARCHITECTURE.md` §2.1). `convert_pretrained.py` inserts
+the equivalent layer in front of every architecture it converts, which is why the rule
+holds for those models too.
 
-So: **never** call `tf.keras.applications.mobilenet_v2.preprocess_input` in the data
-pipeline. Doing that *and* the in-graph `Rescaling` double-applies the shift. The model
-still trains happily and still reports a good validation score — it just predicts garbage
-in the browser, because the browser feeds it `[0,1]` and Python fed it something else.
-`export_tfjs.py` refuses to export a model whose `Rescaling` is not `scale=2.0, offset=-1.0`,
-and `evaluate.py` deliberately preprocesses with `/255` only, so a mismatch shows up as
-Python and the browser disagreeing rather than as a silent accuracy hole.
+So: **never** call any `tf.keras.applications.*.preprocess_input` in the data pipeline.
+Doing that *and* the in-graph `Rescaling` double-applies the transform. The model still
+trains happily and still reports a good validation score — it just predicts garbage in the
+browser, because the browser feeds it `[0,1]` and Python fed it something else.
+`export_tfjs.py` refuses to export a model whose first `Rescaling` is not the one its
+backbone needs, and `evaluate.py` deliberately preprocesses with `/255` only, so a mismatch
+shows up as Python and the browser disagreeing rather than as a silent accuracy hole.
 
 ---
 
@@ -86,6 +91,96 @@ Keras and the `tensorflowjs` converter all work together before you invest in da
 The accuracy it reports is meaningless — it trained on noise. The throwaway export lands in
 `ml/artifacts/smoke-export/`, deliberately **not** in `models/custom/`, so it can never be
 picked up by the app.
+
+---
+
+## Better accuracy on an NVIDIA GPU
+
+The first custom model scored **75.2% on its test split**, and it only knows **7 of the 10**
+categories: its dataset had no cardboard, textile or trash, so it can never answer them. The
+gains come from three places, in this order of importance:
+
+1. **Data.** `make dataset` downloads two openly licensed sets — RealWaste (UCI, CC BY 4.0)
+   and TrashNet (MIT) — and merges them with the Kaggle set you already have. Result:
+   **12,314 images across all 10 classes** (was 5,600 across 7), de-duplicated across sources
+   (184 duplicates dropped), capped at 1,500 per class, re-encoded to ≤512 px with EXIF
+   rotation applied (the browser applies it; Keras does not).
+2. **Backbone.** EfficientNetV2-B0 at 224 px instead of MobileNetV2 (α 0.75) at 160 px, and
+   fine-tuned *entirely* rather than from layer 100.
+3. **Recipe.** AdamW with a warmed-up cosine schedule for the fine-tune, MixUp/CutMix on
+   30% of batches, square-root class weights for the thin classes (textile, trash), batches
+   reshuffled every epoch, and mixed precision — all in `make train-gpu`.
+
+### On the GPU machine
+
+TensorFlow's CUDA build runs on **Linux or WSL2 only** (it dropped native Windows GPU support
+after 2.10). The only system-level install is the **NVIDIA driver**; CUDA and cuDNN come from
+pip.
+
+| the GPU machine runs | do this first |
+|---|---|
+| Linux | install the NVIDIA driver, reboot, check `nvidia-smi` lists the card |
+| Windows 10/11 | install the NVIDIA driver *on Windows*, then `wsl --install -d Ubuntu`, and do everything below inside Ubuntu (WSL2 shares the Windows driver; do **not** install a driver inside WSL) |
+
+Then, in a copy of this project:
+
+```bash
+make venv venv-gpu      # training deps, then CUDA-enabled TensorFlow; ends with a GPU check
+make dataset            # ~700 MB download once, then merge + split (≈10 min)
+make train-gpu          # EfficientNetV2-B0, 8 + 30 epochs, exports to models/custom/
+make evaluate           # the honest number: the test split
+```
+
+`make dataset` needs the Kaggle customwaste set in `custom-waste-classification-dataset/`,
+exactly where it sits on the machine that trained the first model — copy that folder along
+with the project (or see the command it prints). It is the only source of `ewaste` and
+`hazardous`.
+
+Bring the result home by copying **`models/custom/`** to the machine that runs EcoSort and
+pressing *Reload model* in Settings. It holds `metadata.json` with the new class list, so the
+app picks up all 10 categories with no code change.
+
+`make gpu-check` is worth running first on its own: a GPU TensorFlow cannot see does not
+raise an error — training silently falls back to the CPU and takes 20–50× longer. It names
+the cause (no driver, native Windows, missing CUDA libraries) instead.
+
+### Choosing a backbone
+
+`make train-gpu TRAIN_ARGS="--backbone efficientnetv2b2"` swaps the network and keeps the rest
+of the recipe. Every option exports to a TensorFlow.js graph model the app loads unchanged;
+bigger ones cost download size and Live scan frame rate.
+
+| `--backbone` | input | backbone params | float16 download | notes |
+|---|---|---|---|---|
+| `mobilenetv2` | 224 | 2.26 M | ≈ 4.3 MiB | the old default; fastest on CPU |
+| `efficientnetv2b0` | 224 | 5.92 M | 11.5 MiB | **recommended**: the `make train-gpu` default |
+| `efficientnetv2b1` | 240 | 6.93 M | ≈ 13.2 MiB | |
+| `efficientnetv2b2` | 260 | 8.77 M | ≈ 16.7 MiB | more accurate, Live scan slower |
+| `efficientnetv2b3` | 300 | 12.93 M | ≈ 24.7 MiB | largest that is still comfortable in a browser |
+
+Sizes marked ≈ are two bytes per parameter; B0's is a real float16 export.
+
+**Measured, same data, same test images (1,231 photos, all 10 classes).** A shortened run of
+this recipe on a CPU (3 + 7 epochs, no GPU, no mixed precision) against the first model:
+
+| | first model (MobileNetV2 α0.75, 160 px, 7 classes) | EfficientNetV2-B0, 224 px, 10 classes |
+|---|---|---|
+| all 10 classes | 57.9% (cannot answer 3 of them) | **87.4%** |
+| the 7 classes both know | 67.9% | **87.6%** |
+| photos from RealWaste/TrashNet, seen by neither in training | 40.6% | **88.2%** |
+| Live scan on an Intel UHD 630 iGPU, two items in view | 9.9 fps | 5.3 fps |
+
+The full `make train-gpu` schedule (8 + 30 epochs, MixUp/CutMix) should land above that CPU run.
+Its weakest classes were `plastic` (70% recall — often called glass or metal) and `trash`
+(75%), which is where more photos of your own will pay off first. The cost is the last row:
+on integrated graphics the bigger network halves Live scan's frame rate. On a discrete GPU
+that does not matter; on a laptop iGPU, `--image-size 192` claws some of it back.
+ConvNeXt was tried and left out: its exact-GELU op (`Erfc`) is not supported by the
+TensorFlow.js converter.
+
+If the GPU runs out of memory, lower the batch: `make train-gpu TRAIN_ARGS="--batch-size 32"`.
+If your card predates tensor cores (GTX 10-series and older), mixed precision does not help:
+`make train-gpu GPU_PRECISION=`.
 
 ---
 
@@ -193,15 +288,25 @@ Two stages:
 
 | stage | backbone | lr | epochs | what it does |
 |---|---|---|---|---|
-| 1 | frozen | `1e-3` | `--epochs` (20) | trains only the new classifier head |
-| 2 | unfrozen from layer `--fine-tune-at` (100) | `1e-5` | `--fine-tune-epochs` (10) | adapts the top of the backbone |
+| 1 | frozen | Adam `1e-3` | `--epochs` (20) | trains only the new classifier head |
+| 2 | unfrozen from `--fine-tune-at` | see below | `--fine-tune-epochs` (10) | adapts the backbone |
+
+Stage 2 depends on `--backbone`. MobileNetV2 (the default) keeps the original recipe:
+layers 100+ unfrozen, Adam `1e-5`, halved on a val-loss plateau. EfficientNetV2 unfreezes
+every layer and uses AdamW (weight decay `1e-4`) with a one-epoch linear warm-up to `1e-4`
+and cosine decay to 1% of it. Each of these is a flag (`--fine-tune-at`, `--fine-tune-lr`,
+`--schedule`, `--weight-decay`, `--warmup-epochs`).
 
 Every `BatchNormalization` layer stays frozen in stage 2 and the backbone is always called
 with `training=False`. That is not an oversight: with small batches, letting BN update its
 moving averages is *the* classic MobileNetV2 fine-tuning failure — training accuracy keeps
 climbing while validation accuracy collapses.
 
-Class weights (inverse frequency) are on by default; disable with `--no-class-weights`.
+Class weights are on by default: inverse frequency, square-rooted (`--class-weight-power
+0.5`), so a class with a quarter of the images weighs 2× rather than 4× — the thin classes
+are also the noisiest. Disable with `--no-class-weights`. `--mixup` / `--cutmix` /
+`--mix-prob` blend pairs of training images and their labels; they are off by default and
+on in `make train-gpu`.
 Augmentation (flip, rotate, zoom, translate, contrast, brightness) is applied in-graph
 during training only, and is **excluded from the export** — `tfjs-layers` has no kernels for
 `RandomFlip` and friends, so a `model.json` containing them fails to load in the browser
@@ -216,6 +321,8 @@ python ml/train.py --batch-size 8                         # less memory
 python ml/train.py --image-size 160 --alpha 0.75          # smaller, faster, less accurate
 python ml/train.py --no-fine-tune                         # stage 1 only
 python ml/train.py --mixed-precision                      # ~2x on a modern NVIDIA GPU
+python ml/train.py --backbone efficientnetv2b0            # the stronger network (GPU advised)
+python ml/train.py --quantize float16                     # half-size browser download
 python ml/train.py --resume                               # continue from the best checkpoint
 python ml/train.py --no-export                            # train now, convert later
 ```
@@ -275,6 +382,15 @@ The same `*_test.*` files appear when `ml/dataset/test/` has images.
 
 None of these are downloaded for you — they have their own licences and several need a
 Kaggle account. Fetch them by hand into `ml/source/<class>/`.
+
+### RealWaste — the only open source of `textile`
+
+<https://archive.ics.uci.edu/dataset/908/realwaste> (CC BY 4.0,
+doi:10.24432/C5SS4G). 4,752 photos of real items on a landfill sorting line, 524×524, in
+nine folders that map onto eight EcoSort classes (`Food Organics` and `Vegetation` both go to
+`organic`). With TrashNet it fills everything the Kaggle customwaste set lacks: `cardboard`,
+`textile` and `trash`. `make dataset` downloads, verifies and ingests it; the mapping is
+`SOURCE_MAPS["realwaste"]` in `ingest_sources.py`.
 
 ### TrashNet — the obvious starting point
 
@@ -336,7 +452,12 @@ kitchen lighting. Fifty photos taken that way are worth several hundred studio s
 
 ## How long does it take?
 
-Roughly, on ~2,500 images at 224×224, batch 32, 20 + 10 epochs:
+Measured on an Intel Core i5-10400 (6 cores, 12 threads), 9,235 training images, batch 32:
+EfficientNetV2-B0 at 224 px took **~4.5 min per stage-1 epoch** and **~14 min per stage-2
+epoch** (whole network unfrozen) — the 3 + 7 epoch run above took 1 h 45 min. That is why
+the full recipe is `make train-gpu`.
+
+Roughly, for MobileNetV2 on ~2,500 images at 224×224, batch 32, 20 + 10 epochs:
 
 | hardware | stage 1 / epoch | stage 2 / epoch | total |
 |---|---|---|---|
@@ -536,9 +657,11 @@ raise instead of run.
 
 | file | what it does |
 |---|---|
+| `build_dataset.py` | one command: download RealWaste + TrashNet (verified), merge with customwaste, split — `make dataset` |
 | `ingest_sources.py` | `--inspect` a downloaded dataset; merge several into `source/` with de-collision, dedup and per-class caps |
 | `prepare_dataset.py` | `--scaffold` the class folders; validate, stratify and split images into `dataset/` |
-| `train.py` | two-stage MobileNetV2 transfer learning, artifacts, and the TFJS export |
+| `train.py` | two-stage transfer learning (MobileNetV2 or EfficientNetV2), artifacts, and the TFJS export |
+| `gpu_check.py` | whether TensorFlow can train on an NVIDIA GPU here, and if not, why — `make gpu-check` |
 | `export_tfjs.py` | Keras → TensorFlow.js conversion + `metadata.json`; also a standalone CLI |
 | `convert_pretrained.py` | pretrained `keras.applications` ImageNet net → TensorFlow.js in `models/<arch>/` |
 | `evaluate.py` | classification report, confusion matrix, and single-image top-3 with browser-identical preprocessing |

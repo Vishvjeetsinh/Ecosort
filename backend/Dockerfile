@@ -4,7 +4,7 @@
 #
 # IMPORTANT: the build context is the REPOSITORY ROOT (compose sets `context: .` with
 # `dockerfile: backend/Dockerfile`), because the image bakes in the pretrained MobileNetV2
-# weights using scripts/fetch-mobilenet.mjs, which lives outside backend/.
+# and SSDLite detector weights using scripts/fetch-*.mjs, which live outside backend/.
 
 ##############################################################################
 # Stage 1 - dependencies (carries a C++ toolchain; never shipped)
@@ -72,6 +72,12 @@ USER node
 # API then reports fallback.available=false with the `make fetch-models` remedy.
 RUN node scripts/fetch-mobilenet.mjs --dest /app/bundled-models --quiet \
  || echo "WARNING: pretrained MobileNetV2 download failed; run 'make fetch-models' on the host"
+
+# Same deal for the object detector behind the Live scan tab. It lands in
+# bundled-models/detectors/, which the classifier registry never lists (see
+# scripts/fetch-detector.mjs), and the tab explains the remedy when it is missing.
+RUN node scripts/fetch-detector.mjs --dest /app/bundled-models --quiet \
+ || echo "WARNING: object detector download failed; run 'make fetch-models' on the host"
 
 EXPOSE 4000
 

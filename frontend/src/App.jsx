@@ -8,6 +8,7 @@ import useLocalStorage from './hooks/useLocalStorage.js';
 import useToasts from './hooks/useToasts.js';
 import useRules from './hooks/useRules.js';
 import useHistory from './hooks/useHistory.js';
+import useDetector from './hooks/useDetector.js';
 
 // Written by the ML agent: resolve either export style so a mismatch degrades to the
 // actionable "no model" screen instead of throwing during the first render.
@@ -21,6 +22,7 @@ import Toaster from './components/Toaster.jsx';
 import Spinner from './components/Spinner.jsx';
 
 import CapturePanel from './components/CapturePanel.jsx';
+import LiveScanPanel from './components/LiveScanPanel.jsx';
 import ResultsPanel from './components/ResultsPanel.jsx';
 import BinColorGuide from './components/BinColorGuide.jsx';
 import HistoryPanel from './components/HistoryPanel.jsx';
@@ -78,12 +80,13 @@ function icon(path) {
 
 const TAB_ICONS = {
   classify: icon('M4 7.5A2.5 2.5 0 0 1 6.5 5h1.2l1-1.6h6.6l1 1.6h1.2A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Zm8 9a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z'),
+  scan: icon('M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8m8 0h2.5A1.5 1.5 0 0 1 20 5.5V8m0 8v2.5a1.5 1.5 0 0 1-1.5 1.5H16m-8 0H5.5A1.5 1.5 0 0 1 4 18.5V16M7.5 8.5h4v4h-4zm5 3h4v4.5h-4z'),
   guide: icon('M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Zm9-1.5h5.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H13V4Z'),
   history: icon('M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 5v4h4M12 7.5V12l3 2'),
   stats: icon('M4 20V10m5 10V4m5 16v-7m5 7V8'),
 };
 
-const TAB_IDS = ['classify', 'guide', 'history', 'stats'];
+const TAB_IDS = ['classify', 'scan', 'guide', 'history', 'stats'];
 
 function prefersDark() {
   try {
@@ -222,6 +225,7 @@ export default function App() {
   const [modelId, setModelId] = useLocalStorage('modelId', '');
 
   const {
+    engine: classifierEngine,
     kind: engineKind,
     backend: engineBackend,
     status: engineStatus,
@@ -244,6 +248,10 @@ export default function App() {
   const captureSize = Math.max(320, engineInputSize || 0);
 
   const engineBlocked = engineStatus === 'error' || engineKind === 'none';
+
+  // Only Live scan needs the ~18 MB detector: it loads the first time that tab opens and
+  // then stays loaded, so switching tabs back and forth costs nothing.
+  const scanDetector = useDetector({ enabled: activeTab === 'scan' });
 
   const [modelStatus, setModelStatus] = useState(null);
   const [modelStatusToken, setModelStatusToken] = useState(0);
@@ -542,6 +550,80 @@ export default function App() {
     void persistResult(result, capture);
   }, [capture, persistResult, result]);
 
+  /* ------------------------------------------------------------ live scan */
+
+  const [scanSaving, setScanSaving] = useState(false);
+
+  // One history row per item found in a frozen frame or photo, each with its own crop as
+  // the thumbnail - the history and stats then count items, exactly as for single shots.
+  const handleSaveScan = useCallback(
+    async (items, { source, durationMs } = {}) => {
+      if (!regionId) {
+        push({
+          tone: 'error',
+          title: 'Cannot save yet',
+          message: 'Pick a recycling region first — history rows are stored per region.',
+        });
+        return;
+      }
+      const list = (Array.isArray(items) ? items : []).filter(
+        (item) => Array.isArray(item?.predictions) && item.predictions.length > 0,
+      );
+      if (list.length === 0) return;
+
+      setScanSaving(true);
+      let saved = 0;
+      let firstError = null;
+      try {
+        for (const item of list) {
+          const body = {
+            predictions: item.predictions.slice(0, 10).map((prediction) => ({
+              category: prediction.category,
+              label: prediction.label,
+              confidence: Math.min(1, Math.max(0, prediction.confidence)),
+            })),
+            source: source === 'webcam' ? 'webcam' : 'upload',
+            modelKind: engineKind === 'custom' ? 'custom' : 'fallback',
+            regionId,
+            rawLabels: null,
+            durationMs: Number.isFinite(durationMs) ? Math.round(durationMs) : null,
+          };
+          const thumb = item.imageDataUrl;
+          if (settings.saveThumbnails && typeof thumb === 'string' && thumb.length <= MAX_IMAGE_DATA_URL) {
+            body.imageDataUrl = thumb;
+          }
+          try {
+            await api.createClassification(body);
+            saved += 1;
+          } catch (err) {
+            firstError = firstError || err;
+          }
+        }
+      } finally {
+        setScanSaving(false);
+      }
+
+      if (saved > 0) {
+        history.refresh();
+        refreshStats();
+      }
+      if (firstError) {
+        push({
+          tone: 'error',
+          title: saved > 0 ? `Saved ${saved} of ${list.length} items` : 'Could not save to history',
+          message: firstError.message,
+        });
+      } else {
+        push({
+          tone: 'success',
+          title: 'Saved to history',
+          message: `${saved === 1 ? '1 item' : `${saved} items`} recorded for this region.`,
+        });
+      }
+    },
+    [engineKind, history.refresh, push, refreshStats, regionId, settings.saveThumbnails],
+  );
+
   const handleCorrectCurrent = useCallback(
     async (categoryId) => {
       if (!categoryId) return;
@@ -642,6 +724,7 @@ export default function App() {
   const tabItems = useMemo(
     () => [
       { id: 'classify', label: 'Classify', icon: TAB_ICONS.classify },
+      { id: 'scan', label: 'Live scan', icon: TAB_ICONS.scan },
       { id: 'guide', label: 'Bin guide', icon: TAB_ICONS.guide },
       {
         id: 'history',
@@ -753,6 +836,30 @@ export default function App() {
                 saved={Boolean(savedItem)}
               />
             </div>
+          </section>
+        ) : null}
+
+        {activeTab === 'scan' ? (
+          <section
+            role="tabpanel"
+            id={panelId('scan')}
+            aria-labelledby={tabId('scan')}
+            tabIndex={-1}
+            className="mt-4"
+          >
+            <LiveScanPanel
+              detector={scanDetector}
+              engine={classifierEngine}
+              engineReady={engineReady}
+              engineProgress={engineProgress}
+              engineBlocked={engineBlocked}
+              rules={rules}
+              categories={categories}
+              mirror={settings.mirrorWebcam}
+              topK={settings.topK}
+              onSaveItems={handleSaveScan}
+              saving={scanSaving}
+            />
           </section>
         ) : null}
 

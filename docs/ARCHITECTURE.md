@@ -60,10 +60,21 @@ These were verified by downloading the model and running inference. **Do not "fi
 
 ### 2.2 Custom model contract
 
-`ml/train.py` **must** build a Keras model whose *first layer* is
-`tf.keras.layers.Rescaling(scale=2.0, offset=-1.0)` so that the exported model, exactly
-like the fallback, **takes `[0,1]` input**. This keeps one single preprocessing path in
-`classifier.js`. The final layer is a softmax over N waste classes.
+`ml/train.py` **must** build a Keras model whose *first layer* is a
+`tf.keras.layers.Rescaling` that maps `[0,1]` onto the range its backbone was pretrained on,
+so that the exported model, exactly like the fallback, **takes `[0,1]` input**. This keeps
+one single preprocessing path in `classifier.js`. The final layer is a softmax over N waste
+classes.
+
+| backbone (`--backbone`) | first layer | maps `[0,1]` to |
+|---|---|---|
+| MobileNetV2 (default) | `Rescaling(scale=2.0, offset=-1.0)` | `[-1,1]` |
+| EfficientNetV2-B0…B3 | `Rescaling(scale=255.0, offset=0.0)` | `[0,255]`; the Keras application's own preprocessing normalises from there |
+
+`ml/export_tfjs.py` checks the first `Rescaling` against the backbone before exporting, and
+a model trained with mixed precision is rebuilt in float32 first — TensorFlow.js has no
+float16 tensors. `metadata.json.inputSize` carries the backbone's resolution (224–300), which
+`classifier.js` already reads, so no frontend change follows from switching backbones.
 
 ### 2.3 `metadata.json` — uniform descriptor for both engines
 
@@ -366,6 +377,9 @@ Engine = {
   inputSize: number,
   metadata: object,
   classify(source, { topK = 3 }) -> Promise<ClassifyResult>,   // source: HTMLImageElement|HTMLVideoElement|HTMLCanvasElement
+  // Live scan (5.1): many regions of ONE frame in one batched predict call.
+  classifyRegions(source, regions, { topK = 3 }) -> Promise<{ results: ClassifyResult-like[], modelKind, durationMs }>,
+  warmRegionBatches() -> Promise<void>,  // compiles batch sizes 1/2/4/6 once; idempotent
   dispose(): void
 }
 
@@ -405,7 +419,7 @@ synonyms, e.g. `"pop bottle, soda bottle"`). A unit test asserts every key exist
 ```
 <App>
   <AppHeader modelStatus regions regionId onRegionChange onOpenSettings />
-  <Tabs value onChange items />          // "classify" | "guide" | "history" | "stats"
+  <Tabs value onChange items />          // "classify" | "scan" | "guide" | "history" | "stats"
 
   tab=classify:
     <CapturePanel mode onModeChange onImageReady busy disabled error onError />
@@ -419,6 +433,12 @@ synonyms, e.g. `"pop bottle, soda bottle"`). A unit test asserts every key exist
       <BinGuideCard guidance category bin region />
         <PrepStepList steps />
       <RawLabelsDisclosure rawLabels />
+
+  tab=scan:                               // 5.1
+    <LiveScanPanel detector engine engineReady engineProgress engineBlocked rules categories mirror topK onSaveItems saving />
+      <DetectionBox track bin mirrored selected debug onSelect />   // one per tracked item
+      <ScanItemList tracks rules categories selectedId onSelect mode debug />
+      <BinGuideCard guidance category bin region />
 
   tab=guide:
     <BinColorGuide rules categories query onQueryChange />
@@ -449,6 +469,59 @@ synonyms, e.g. `"pop bottle, soda bottle"`). A unit test asserts every key exist
   building dynamic Tailwind class names (they would be purged).
 * Must be responsive: single column under `md`, two columns at `lg`.
 * Every interactive element needs a visible focus ring and an accessible name.
+
+### 5.1 Live scan — detect, classify, track
+
+The classifiers assume one item filling the frame. The **Live scan** tab handles a whole
+scene: every item in view gets its own box, coloured by the bin it belongs in for the selected
+region. Three stages run per frame, all in the browser:
+
+```
+fromPixels(frame) ─┬─> detector.detect ──> boxes (normalised, class-agnostic)
+   (uploaded once) │        │ toPixelRegion: square, +10% padding, shifted into the frame
+                   └─> engine.classifyRegions ──> waste predictions per box (one batch)
+                                     │
+                          tracker.update ──> stable, smoothed tracks ──> overlay + list
+```
+
+**Detector** (`lib/detector.js`, weights in `models/detectors/ssdlite_mobilenet_v2/`):
+pretrained COCO SSDLite MobileNetV2, the model `@tensorflow-models/coco-ssd` calls
+`lite_mobilenet_v2`. Graph model, run with `executeAsync`; int32 `[1,H,W,3]` input of raw
+0–255 pixels; outputs `[1,1917,90]` sigmoid scores and `[1,1917,1,4]` `[ymin,xmin,ymax,xmax]`
+boxes with no NMS applied; score column *j* is COCO id *j*+1. Two deliberate departures from
+stock COCO-SSD, both measured on the waste test set:
+
+* **The COCO label is not the answer.** It is usually wrong for waste (a phone scored as
+  "bicycle") while the box is usually right, so a box's score is its best score over every
+  class except people and furniture (`IGNORED_COCO_IDS`), and the waste classifier names it.
+* **Threshold 0.2, not 0.5.** At 0.5 only 31% of test items got any box; at 0.2, 67%.
+
+**Stills** (a frozen frame or an uploaded photo) also run the detector on a 2×2 grid of
+overlapping tiles and merge the results (`mergeTiledDetections`: tile boxes cut by an inner
+tile edge are dropped, the rest are suppressed by IoU *and* by containment). SSDLite sees a
+300×300 thumbnail, so this is what finds small items; it costs five passes, so live frames
+never use it.
+
+**Classifier batching.** `classifyRegions` cuts every crop with one `tf.image.cropAndResize`
+and pads the batch to 1, 2, 4 or 6. Both exist because WebGL compiles a shader per tensor
+shape: per-crop `slice` + `resizeBilinear` recompiled on every frame (boxes move), and an
+unpadded batch recompiled the whole network whenever the item count changed.
+`warmRegionBatches()` compiles the four sizes before the first frame. The crop sampling grid
+differs from the whole-image kernel by a sub-pixel shift, well inside the detector's box error.
+
+**Tracker** (`lib/tracker.js`, pure): greedy IoU matching gives each item a stable id (also its
+React key, so boxes animate instead of re-mounting); boxes and per-category confidences are
+exponentially smoothed so a label only changes when the evidence does; a new item is shown
+after two sightings and coasts for four frames after it disappears. Stills use *snap* mode:
+exact boxes, immediate, unmatched tracks dropped.
+
+**Saving** a frozen frame or photo writes one `POST /api/classifications` row per item, each
+with its own crop as the thumbnail, so History and Stats count items exactly as for single
+shots. No schema change.
+
+Measured with headless Chrome on an Intel UHD 630 iGPU and a 1280×720 camera: ~10 fps with
+two items in view (detect ≈ 60 ms, classify both ≈ 30 ms) with the MobileNetV2 custom model,
+~5 fps (classify ≈ 113 ms) with the EfficientNetV2-B0 one; a still's tiled pass ≈ 400 ms.
 
 ---
 
@@ -511,7 +584,9 @@ Environment variables (all have working defaults; see `.env.example`):
 `docker compose up --build` must be sufficient — no manual steps. The backend Dockerfile
 runs `scripts/fetch-mobilenet.mjs` at build time into `BUNDLED_MODELS_DIR`; if the download
 fails the build still succeeds and the API reports `fallback.available: false` with the
-`make fetch-models` remedy.
+`make fetch-models` remedy. `scripts/fetch-detector.mjs` does the same for the Live scan
+detector, into `BUNDLED_MODELS_DIR/detectors/` — a level the classifier registry never lists,
+while `/models/detectors/**` is still served. Both scripts share `scripts/lib/tfjs-model-fetch.mjs`.
 
 ---
 

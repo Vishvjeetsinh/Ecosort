@@ -27,6 +27,7 @@ image at build time, so the running stack needs no internet at all.
 - [What you get](#what-you-get)
 - [Quick start](#quick-start)
 - [How classification works](#how-classification-works)
+- [Live scan: many items at once](#live-scan-many-items-at-once)
 - [Choosing a model](#choosing-a-model)
 - [The waste taxonomy](#the-waste-taxonomy)
 - [Recycling regions](#recycling-regions)
@@ -58,6 +59,10 @@ image at build time, so the running stack needs no internet at all.
 
 Features:
 
+- **Live scan**: point the camera at a table of mixed rubbish and every item gets its own
+  box, coloured by the bin it goes in, tracked from frame to frame (~10 fps on an Intel iGPU
+  with the MobileNetV2 model, ~5 fps with the more accurate EfficientNetV2-B0 one).
+  Freeze a frame (or scan a photo) for a thorough tiled pass, then save every item at once.
 - **Webcam capture** with a live square framing guide showing exactly the crop the model
   sees, a camera picker, a mirror toggle and an optional ~2 fps live mode.
 - **Upload** by click, drag‑and‑drop or paste from the clipboard.
@@ -178,6 +183,31 @@ Each model directory carries a `metadata.json` describing `inputSize`, `inputRan
 `outputActivation`, `classOffset` and `classes`, so the frontend has exactly one code path
 for every engine and sniffs `model.json`'s `format` field to choose `loadGraphModel` vs
 `loadLayersModel`.
+
+---
+
+## Live scan: many items at once
+
+The Classify tab answers "what is this?" for one item filling the frame. The **Live scan**
+tab answers it for a whole scene, in three stages that all run in the browser:
+
+1. **Detect.** A pretrained COCO SSDLite MobileNetV2 (18 MB, `models/detectors/`) proposes
+   boxes. Its COCO *label* is ignored: on waste it is usually wrong (a phone scored as a
+   "bicycle") while the *box* is usually right, so boxes are scored class-agnostically at a
+   0.2 threshold instead of COCO-SSD's 0.5, which took recall on the waste test set from 31%
+   to 67%.
+2. **Classify.** Each box becomes a padded square crop, and all crops go through the active
+   waste classifier as **one batch** — so whichever model the picker shows names the items.
+3. **Track.** An IoU tracker keeps each item's id, smooths its box and its label votes, and
+   hides one-frame false positives, so labels do not flicker.
+
+**Freeze frame** (or **Scan a photo**) re-scans the still with the detector run on the whole
+picture *plus* four overlapping tiles, which finds small items the 300×300 live pass misses.
+**Save** then writes one history row per item, each with its own crop as the thumbnail.
+
+The **Debug** toggle shows what the detector itself thought each box was, and the per-frame
+cost of each stage. The details, including why crops are batched and padded the way they
+are, are in [ARCHITECTURE §5.1](docs/ARCHITECTURE.md#51-live-scan--detect-classify-track).
 
 ---
 
@@ -356,12 +386,15 @@ out of the yellow one; Tokyo burns most non‑container plastics.
 │       ├── App.jsx             owns all state and wiring
 │       ├── lib/
 │       │   ├── classifier.js       the TFJS engine: load, preprocess, aggregate
+│       │   ├── detector.js         Live scan: SSDLite boxes, class-agnostic, tiled stills
+│       │   ├── tracker.js          Live scan: IoU tracking and label smoothing
+│       │   ├── boxes.js  liveScan.js   box geometry; one detect → classify frame
 │       │   ├── imagenetClasses.js  generated: the 1000 class names
 │       │   ├── imagenetWasteMap.js 393 ImageNet → waste mappings
 │       │   ├── imageUtils.js       centre-crop, downscale, decode
 │       │   └── api.js              the only module that talks to the backend
-│       ├── hooks/              useClassifier, useWebcam, useRules, useHistory, …
-│       └── components/         27 components
+│       ├── hooks/              useClassifier, useDetector, useLiveScan, useWebcam, …
+│       └── components/         29 components
 │
 ├── ml/                         host-side training (not in any image)
 │   ├── train.py                two-stage MobileNetV2 transfer learning
@@ -373,9 +406,12 @@ out of the yellow one; Tokyo burns most non‑container plastics.
 ├── models/                     bind-mounted into the backend; any dir with a model.json
 │   ├── mobilenet_v2/           pretrained fallback (fetched)
 │   ├── inceptionresnetv2/      converted (after `make convert-model`)
-│   └── custom/                 your trained model (after `make train`)
+│   ├── custom/                 your trained model (after `make train`)
+│   └── detectors/              Live scan object detector (fetched; never a classifier)
 │
-├── scripts/fetch-mobilenet.mjs zero-dependency model downloader
+├── scripts/                    zero-dependency model downloaders
+│   ├── fetch-mobilenet.mjs  fetch-detector.mjs
+│   └── lib/tfjs-model-fetch.mjs    shared download, verify and atomic install
 └── docs/ARCHITECTURE.md        the binding interface contract
 ```
 
@@ -437,14 +473,35 @@ Then click **Reload model** in EcoSort's settings (or refresh). The backend re�
 models directory every few seconds, so no restart and no rebuild is needed — `./models` is
 bind‑mounted into the container.
 
-`train.py` does the things that actually matter for MobileNetV2 transfer learning:
+### The accurate model: all 10 classes, on an NVIDIA GPU
+
+The first trained model knows 7 of the 10 categories (its data had no cardboard, textile or
+trash) and scores 75% on its test split. The EfficientNetV2-B0 recipe below, even cut short
+to fit a CPU, scored **87.4% on all 10 classes** — and 88.2% vs the old model's 40.6% on
+photos from datasets neither had trained on. On a machine with an NVIDIA card (Linux, or
+Windows through WSL2):
+
+```bash
+make venv venv-gpu      # CUDA-enabled TensorFlow from pip; only the NVIDIA driver is needed
+make dataset            # downloads RealWaste + TrashNet, merges: 12,314 images, 10 classes
+make train-gpu          # EfficientNetV2-B0, mixed precision, float16 export → models/custom/
+```
+
+Copy `models/custom/` back to the machine running EcoSort. The full walkthrough — WSL2,
+backbone choices and their download sizes, the recipe — is in
+[`ml/README.md`](ml/README.md#better-accuracy-on-an-nvidia-gpu).
+
+`train.py` does the things that actually matter for transfer learning:
 
 - **Stage 1** trains the head with the backbone frozen; **stage 2** unfreezes from
-  `--fine-tune-at` with a much lower learning rate.
-- **BatchNorm layers stay frozen during fine‑tuning** — the classic MobileNetV2 pitfall.
+  `--fine-tune-at` with a much lower learning rate (AdamW + warmed-up cosine decay for
+  EfficientNetV2).
+- **BatchNorm layers stay frozen during fine‑tuning** — the classic transfer-learning pitfall.
 - Augmentation runs on `[0,1]` images *before* the rescale, and is a no‑op at inference, so
   it never leaks into the exported graph.
-- Class weights, label smoothing, early stopping, LR reduction, checkpoints.
+- Class weights, label smoothing, optional MixUp/CutMix, early stopping, checkpoints.
+- **Mixed precision without breaking the browser**: the model is rebuilt in float32 before
+  export, because TensorFlow.js has no float16 tensors.
 - Confusion matrices, per‑class precision/recall/F1 and training curves into `ml/artifacts/`.
 
 `ml/README.md` covers dataset sources (TrashNet, TACO, the Kaggle garbage sets), how they
@@ -470,10 +527,13 @@ browser could not load. Verified: browser output matches Python to ~1e‑7.
 | `make up` / `make down` | build and start / stop the dev stack |
 | `make logs` | follow both services |
 | `make doctor` | print tool versions and which models are installed |
-| `make fetch-models` | download the pretrained fallback into `./models` |
+| `make fetch-models` | download the pretrained fallback and the Live scan detector into `./models` |
 | `make test` | backend + frontend test suites |
 | `make venv` | create `ml/.venv` and install the Python deps |
 | `make train` / `make train-smoke` | train for real / prove the toolchain |
+| `make dataset` | download RealWaste + TrashNet and build the 10-class dataset |
+| `make venv-gpu` / `make gpu-check` | add CUDA to `ml/.venv` / explain whether the GPU is usable |
+| `make train-gpu` | the recommended EfficientNetV2-B0 recipe on an NVIDIA GPU |
 | `make list-models` | the pretrained architectures that can be converted |
 | `make convert-model ARCH=… QUANTIZE=…` | convert one of them into `./models` |
 | `make prod-up` | nginx production stack on :8080 |
@@ -536,14 +596,18 @@ TLS termination, no auth and no rate limiting, so do not expose it to the intern
 make test
 ```
 
-- **Backend — 86 tests** (`node --test`, supertest): every endpoint's happy path and error
+- **Backend — 89 tests** (`node --test`, supertest): every endpoint's happy path and error
   path, pagination, filtering, validation limits, the 413 boundary, correction semantics,
   dense day‑series stats, a data‑integrity suite asserting every region covers all ten
   categories, every `binId` resolves, and every denormalised bin colour matches its bin,
-  and that a synthesised custom‑model descriptor never invents class names.
-- **Frontend — 105 tests** (vitest): the ImageNet→waste map (every key must exist in the
-  real class list), the aggregation arithmetic, the formatters, and the class‑order guard
-  that refuses to name a custom model's outputs without a `classes` list to name them from.
+  that a synthesised custom‑model descriptor never invents class names, and that the Live
+  scan detector is served from `/models/detectors/` but never offered as a classifier.
+- **Frontend — 153 tests** (vitest): the ImageNet→waste map (every key must exist in the
+  real class list), the aggregation arithmetic, the formatters, the class‑order guard
+  that refuses to name a custom model's outputs without a `classes` list to name them from,
+  and Live scan's pure core — box geometry and crop regions, the detection threshold and
+  class-agnostic NMS, the tiled-still merge, crop batching, and the tracker's matching,
+  smoothing, coasting and snap behaviour.
 
 The classifier's aggregation is exported as a pure function
 (`aggregateImagenetPredictions`) precisely so it can be tested without a GPU or a DOM.
@@ -652,6 +716,17 @@ The pretrained fallback is Google's MobileNetV2 ImageNet module, converted for
 TensorFlow.js and distributed under the **Apache License 2.0**. It is downloaded at build
 time from `storage.googleapis.com/tfjs-models`; provenance, upstream URL and fetch date are
 recorded in `models/mobilenet_v2/SOURCE.txt`.
+
+The Live scan detector is the `ssdlite_mobilenet_v2_coco` checkpoint from the TensorFlow
+Object Detection API model zoo, as converted and hosted by the tfjs-models project
+(`@tensorflow-models/coco-ssd`), also **Apache License 2.0**, fetched the same way;
+see `models/detectors/ssdlite_mobilenet_v2/SOURCE.txt`.
+
+A custom model trained with `make dataset` learns from **RealWaste** (S. Single, S. Iranmanesh,
+R. Raad, UCI Machine Learning Repository, doi:10.24432/C5SS4G, **CC BY 4.0** — attribution
+required when you publish the model), **TrashNet** (G. Thung and M. Yang, **MIT**) and the
+Kaggle *Custom Waste Classification* dataset you supply. The archives are fetched from their
+publishers and verified by SHA-256 in `ml/build_dataset.py`.
 
 Recycling rules were compiled from the published guidance of the named authorities. They
 are a guide, not a legal reference — confirm locally when it matters.

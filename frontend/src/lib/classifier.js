@@ -515,32 +515,119 @@ function pickOutputTensor(output) {
 }
 
 /**
+ * A model's raw output -> [batch, classes] probabilities with the offset classes dropped.
+ * Must be called inside a tidy scope.
+ */
+function toProbabilities(output, meta) {
+  const scores2d = output.rank === 1 ? output.expandDims(0) : output;
+
+  const width = scores2d.shape[scores2d.shape.length - 1];
+  const offset = Math.min(meta.classOffset ?? 0, Math.max(0, width - 1));
+  const sliced = offset > 0 ? scores2d.slice([0, offset], [-1, width - offset]) : scores2d;
+
+  // A sliced softmax is intentionally NOT renormalised: the dropped classes
+  // are real probability mass and hiding them would inflate confidences.
+  return meta.outputActivation === 'logits' ? tf.softmax(sliced, -1) : sliced;
+}
+
+/**
+ * (alignCorners=false, halfPixelCenters=true) is the exact kernel TF2's
+ * tf.image.resize(method="bilinear") uses, which is what ml/train.py trains through.
+ * alignCorners=true samples differently and puts the model on pixels it never saw;
+ * alignCorners=false alone would select the TF1 legacy kernel, which is a different
+ * mismatch again. Both flags are required.
+ */
+function resizeToInput(pixels, meta) {
+  return tf.image.resizeBilinear(pixels, [meta.inputSize, meta.inputSize], false, true);
+}
+
+/**
  * One inference, start to finish, inside a single tidy scope.
  * Returns a 1-D probability tensor the caller must dispose.
  */
 function runInference(model, source, meta) {
   return tf.tidy(() => {
     const pixels = source instanceof tf.Tensor ? source.clone() : tf.browser.fromPixels(source);
-    // (alignCorners=false, halfPixelCenters=true) is the exact kernel TF2's
-    // tf.image.resize(method="bilinear") uses, which is what ml/train.py trains through.
-    // alignCorners=true samples differently and puts the model on pixels it never saw;
-    // alignCorners=false alone would select the TF1 legacy kernel, which is a different
-    // mismatch again. Both flags are required.
-    const resized = tf.image.resizeBilinear(pixels, [meta.inputSize, meta.inputSize], false, true);
-    const batched = resized.toFloat().div(255).expandDims(0);
+    const batched = resizeToInput(pixels, meta).toFloat().div(255).expandDims(0);
 
-    const output = pickOutputTensor(model.predict(batched));
-    const scores2d = output.rank === 1 ? output.expandDims(0) : output;
-
-    const width = scores2d.shape[scores2d.shape.length - 1];
-    const offset = Math.min(meta.classOffset ?? 0, Math.max(0, width - 1));
-    const sliced = offset > 0 ? scores2d.slice([0, offset], [-1, width - offset]) : scores2d;
-
-    // A sliced softmax is intentionally NOT renormalised: the dropped classes
-    // are real probability mass and hiding them would inflate confidences.
-    const probs = meta.outputActivation === 'logits' ? tf.softmax(sliced, -1) : sliced;
+    const probs = toProbabilities(pickOutputTensor(model.predict(batched)), meta);
 
     return probs.shape[0] === 1 ? probs.squeeze([0]) : probs.slice([0, 0], [1, -1]).squeeze([0]);
+  });
+}
+
+/**
+ * Clamp a pixel rectangle into an H x W frame. Integer, at least 1x1, never outside it:
+ * a slice that overhangs the tensor throws, and a detector box is only ever approximately
+ * inside the frame.
+ */
+export function clampRegion(region, frameHeight, frameWidth) {
+  const int = (value) => (Number.isFinite(Number(value)) ? Math.round(Number(value)) : 0);
+  const x = Math.min(Math.max(0, int(region?.x)), Math.max(0, frameWidth - 1));
+  const y = Math.min(Math.max(0, int(region?.y)), Math.max(0, frameHeight - 1));
+  const width = Math.min(Math.max(1, int(region?.width)), frameWidth - x);
+  const height = Math.min(Math.max(1, int(region?.height)), frameHeight - y);
+  return { x, y, width, height };
+}
+
+/**
+ * Batch sizes Live scan runs the classifier at. The WebGL backend compiles a shader per
+ * distinct tensor shape, so feeding it "however many items are in view" would recompile
+ * every layer of the network each time that count changed; padding up to the next bucket
+ * caps it at four compilations for the life of the engine.
+ */
+const REGION_BATCH_BUCKETS = [1, 2, 4, 6];
+
+export function regionBatchSize(count) {
+  return REGION_BATCH_BUCKETS.find((size) => size >= count) ?? count;
+}
+
+/**
+ * A pixel rectangle as the normalised [y1, x1, y2, x2] box tf.image.cropAndResize takes,
+ * where a coordinate c maps to pixel c * (side - 1): the first and last pixel rows and
+ * columns of the region become the first and last samples of the crop.
+ */
+export function cropBoxFor(region, frameHeight, frameWidth) {
+  const r = clampRegion(region, frameHeight, frameWidth);
+  const ny = Math.max(1, frameHeight - 1);
+  const nx = Math.max(1, frameWidth - 1);
+  return [r.y / ny, r.x / nx, (r.y + r.height - 1) / ny, (r.x + r.width - 1) / nx];
+}
+
+/**
+ * Many crops of ONE frame in ONE predict call (Live scan, ARCHITECTURE 5.1).
+ *
+ * The crops are cut by a single cropAndResize, not by slice + resizeBilinear per crop as
+ * runInference would: every crop has a different pixel size, and on WebGL each new size
+ * compiled a fresh slice and resize shader - on every frame, since boxes move. With
+ * cropAndResize the boxes are data, so the program only depends on the frame size and the
+ * batch bucket. The price is its sampling grid, which lands on the region's first and
+ * last pixels instead of TF2's half-pixel centres: a sub-pixel shift, far inside the
+ * several pixels a detector box is uncertain by anyway.
+ *
+ * Returns a [batch, classes] probability tensor the caller must dispose. `batch` is
+ * regionBatchSize(regions.length); the padding rows repeat the last region and are
+ * ignored by the caller.
+ */
+function runRegionInference(model, source, regions, meta) {
+  return tf.tidy(() => {
+    const pixels = source instanceof tf.Tensor ? source : tf.browser.fromPixels(source);
+    const [height, width] = pixels.shape;
+    const batch = regionBatchSize(regions.length);
+
+    const boxes = [];
+    for (let i = 0; i < batch; i += 1) {
+      boxes.push(cropBoxFor(regions[Math.min(i, regions.length - 1)], height, width));
+    }
+
+    const crops = tf.image.cropAndResize(
+      pixels.toFloat().expandDims(0),
+      tf.tensor2d(boxes, [batch, 4]),
+      tf.zeros([batch], 'int32'),
+      [meta.inputSize, meta.inputSize],
+      'bilinear',
+    );
+    return toProbabilities(pickOutputTensor(model.predict(crops.div(255))), meta);
   });
 }
 
@@ -735,6 +822,12 @@ export async function loadEngine({ modelId, onProgress } = {}) {
 
   const enqueue = makeQueue();
   let disposed = false;
+  let regionBatchesWarm = null;
+
+  const aggregate = (probs, topK) =>
+    meta.labelKind === 'waste'
+      ? aggregateCustomPredictions(probs, { topK, classes })
+      : aggregateImagenetPredictions(probs, { topK, indexMap: defaultIndexMap() });
 
   const engine = {
     kind,
@@ -776,20 +869,91 @@ export async function loadEngine({ modelId, onProgress } = {}) {
           probsTensor.dispose();
         }
 
-        const aggregate =
-          meta.labelKind === 'waste'
-            ? aggregateCustomPredictions(probs, { topK, classes })
-            : aggregateImagenetPredictions(probs, { topK, indexMap: defaultIndexMap() });
+        const summary = aggregate(probs, topK);
 
         return {
-          predictions: aggregate.predictions,
-          rawLabels: aggregate.rawLabels,
+          predictions: summary.predictions,
+          rawLabels: summary.rawLabels,
           modelKind: kind,
           durationMs: Math.round(nowMs() - started),
-          lowConfidence: aggregate.lowConfidence,
-          unmatchedMass: aggregate.unmatchedMass,
+          lowConfidence: summary.lowConfidence,
+          unmatchedMass: summary.unmatchedMass,
         };
       });
+    },
+
+    /**
+     * Classify several regions of one frame in a single batched inference.
+     *
+     * @param {tf.Tensor3D|HTMLVideoElement|HTMLImageElement|HTMLCanvasElement} source
+     *   a [H,W,3] pixel tensor (the caller keeps ownership) or anything fromPixels takes
+     * @param {Array<{x:number, y:number, width:number, height:number}>} regions pixels
+     * @returns {Promise<{results: Array<object>, modelKind: string, durationMs: number}>}
+     *   one entry per region, in order, shaped like classify()'s result
+     */
+    async classifyRegions(source, regions, { topK = 3 } = {}) {
+      if (disposed) throw new Error('This classifier engine has already been disposed.');
+      if (!source) {
+        throw new TypeError('classifyRegions(source) needs an image, video, canvas or tensor.');
+      }
+      const list = Array.isArray(regions) ? regions : [];
+      if (list.length === 0) return { results: [], modelKind: kind, durationMs: 0 };
+
+      return enqueue(async () => {
+        if (disposed) throw new Error('This classifier engine has already been disposed.');
+
+        const started = nowMs();
+        const probsTensor = runRegionInference(model, source, list, meta);
+        let flat;
+        let width;
+        try {
+          width = probsTensor.shape[1];
+          flat = await probsTensor.data();
+        } finally {
+          probsTensor.dispose();
+        }
+
+        const results = list.map((_, i) => {
+          const summary = aggregate(flat.subarray(i * width, (i + 1) * width), topK);
+          return {
+            predictions: summary.predictions,
+            rawLabels: summary.rawLabels,
+            lowConfidence: summary.lowConfidence,
+            unmatchedMass: summary.unmatchedMass,
+          };
+        });
+
+        return { results, modelKind: kind, durationMs: Math.round(nowMs() - started) };
+      });
+    },
+
+    /**
+     * Compile the network for every region batch size up front. Otherwise the first frame
+     * with a third item in view stalls for as long as a whole model warm-up (a second or
+     * more on integrated graphics) while WebGL compiles the batch-of-4 shaders. Idempotent;
+     * only Live scan calls it, so the Classify tab never pays for it.
+     */
+    warmRegionBatches() {
+      if (disposed) return Promise.reject(new Error('This classifier engine has already been disposed.'));
+      if (!regionBatchesWarm) {
+        regionBatchesWarm = enqueue(async () => {
+          for (const size of REGION_BATCH_BUCKETS) {
+            if (disposed) return;
+            const probs = tf.tidy(() =>
+              toProbabilities(
+                pickOutputTensor(model.predict(tf.zeros([size, meta.inputSize, meta.inputSize, 3]))),
+                meta,
+              ),
+            );
+            try {
+              await probs.data();
+            } finally {
+              probs.dispose();
+            }
+          }
+        });
+      }
+      return regionBatchesWarm;
     },
 
     dispose() {
